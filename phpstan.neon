@@ -1,0 +1,13 @@
+parameters:
+    typeAliases:
+        \TypesenseField: 'array<int, array{name: string, type: string, locale: string, optional: bool, facet: bool, index: bool, infix: bool, sort: bool, stem: bool}>'
+        \TypesenseDocument: 'array<string, string|int|float|bool|null>'
+        \TypesenseHighlight: 'array<string, string>'
+        \TypesenseTextMatchInfo: 'array<string,mixed>'
+        \TypesenseHit: 'array{document: \TypesenseDocument, highlight: \TypesenseHighlight,text_match: int|null, text_match_info: \TypesenseTextMatchInfo|null}'
+        \TypesenseResult: 'array{hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null}'
+    level: 10
+    paths:
+        - src
+        - tests/app/src
+        - tests/Functional

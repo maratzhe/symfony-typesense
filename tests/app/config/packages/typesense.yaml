@@ -1,0 +1,2 @@
+typesense:
+    dsn: '%env(resolve:TYPESENSE_DSN)%'

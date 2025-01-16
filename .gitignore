@@ -1,0 +1,7 @@
+.idea
+/var/
+/vendor/
+/tests/app/var/
+/phpunit.xml
+.phpunit.result.cache
+.php-cs-fixer.cache

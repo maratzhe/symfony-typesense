@@ -1,0 +1,135 @@
+doctrine:
+    dbal:
+#        url: '%env(resolve:DATABASE_URL)%'
+#        url: 'sqlite:///%kernel.project_dir%/var/app.db'
+        url: 'postgresql://app:!ChangeMe!@127.0.0.1:54320/app?serverVersion=16&charset=utf8'
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        #server_version: '16'
+
+        profiling_collect_backtrace: '%kernel.debug%'
+        use_savepoints: true
+
+        types:
+            custom_id: App\Type\CustomIdType
+            photo_array: App\Type\PhotoArray
+            color_array: App\Type\ColorArray
+
+    orm:
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        report_fields_where_declared: true
+        validate_xml_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src'
+                prefix: 'App'
+                alias: App
+        controller_resolver:
+            auto_mapping: false
+
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
+
+
+#doctrine:
+#    dbal:
+#        default_connection: default
+#        connections:
+#            default:
+##                url: '%env(resolve:DATABASE_URL)%'
+##                url: 'postgresql://%env(resolve:DB_USER)%:%env(resolve:DB_PASSWORD)%:5432/alvero?serverVersion=16&charset=utf8'
+#                url: 'postgresql://alvero:%env(resolve:DATABASE_PASS)%@%env(resolve:DATABASE_HOST)%/alvero?serverVersion=16&charset=utf8'
+#                use_savepoints: true
+#                profiling_collect_backtrace: '%kernel.debug%'
+#        types:
+#            decimal_decimal: Infrastructure\Db\Types\DecimalDecimalType
+#            company_id: Infrastructure\Db\Types\CompanyIdType
+#            employee_id: Infrastructure\Db\Types\EmployeeIdType
+#            access_id: Infrastructure\Db\Types\AccessIdType
+#            profile_id: Infrastructure\Db\Types\ProfileIdType
+#            warehouse_id: Infrastructure\Db\Types\WarehouseIdType
+#            country_id: Infrastructure\Db\Types\CountryIdType
+#            banned_email_id: Infrastructure\Db\Types\BannedEmailIdType
+#            letter_id: Infrastructure\Db\Types\LetterIdType
+#            product_id: Infrastructure\Db\Types\ProductIdType
+#            media_id: Infrastructure\Db\Types\MediaIdType
+#            roll_id: Infrastructure\Db\Types\RollIdType
+#            timestamp: Infrastructure\Db\Types\TimestampType
+#            sku: Infrastructure\Db\Types\SkuType
+#    orm:
+#        default_entity_manager: default
+#        entity_managers:
+#            default:
+#                connection: default
+#                mappings:
+#                    Domain:
+#                        type: attribute
+#                        is_bundle: false
+#                        dir: '%kernel.project_dir%/src/domain'
+#                        prefix: 'Domain'
+#                        alias: Domain
+#                    Infrastructure\Storage\Values:
+#                        type: attribute
+#                        is_bundle: false
+#                        dir: '%kernel.project_dir%/src/infrastructure/Storage/Values'
+#                        prefix: 'Infrastructure\Storage\Values'
+#                        alias: Infrastructure\Storage\Values                        
+#
+#        controller_resolver:
+#            auto_mapping: false
+#
+#when@test:
+#    doctrine:
+#        dbal:
+#            # "TEST_TOKEN" is typically set by ParaTest
+#            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+#
+#when@prod:
+#    doctrine:
+#        orm:
+#            auto_generate_proxy_classes: false
+#            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+#            query_cache_driver:
+#                type: pool
+#                pool: doctrine.system_cache_pool
+#            result_cache_driver:
+#                type: pool
+#                pool: doctrine.result_cache_pool
+#
+#    framework:
+#        cache:
+#            pools:
+#                doctrine.result_cache_pool:
+#                    adapter: cache.app
+#                doctrine.system_cache_pool:
+#                    adapter: cache.system

@@ -1,0 +1,89 @@
+services:
+  search.client:
+    class: 'Typesense\Client'
+    factory: ['Maratzhe\SymfonyTypesense\Factory\ClientFactory', 'create']
+
+  search.mapper:
+    class: 'Maratzhe\SymfonyTypesense\Service\Mapper'
+    arguments:
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+
+  search.transformer:
+    class: 'Maratzhe\SymfonyTypesense\Service\Transformer'
+    arguments:
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+      $mapper: '@search.mapper'
+
+  search.collection_manager:
+    class: 'Maratzhe\SymfonyTypesense\Service\CollectionManager'
+    public: true
+    arguments:
+      $client: '@search.client'
+      $mapper: '@search.mapper'
+
+  search.indexer:
+    class: 'Maratzhe\SymfonyTypesense\Service\Indexer'
+    public: true
+    arguments:
+      $collectionManager: '@search.collection_manager'
+      $transformer: '@search.transformer'
+      $mapper: '@search.mapper'
+
+  search.listener:
+    class: 'Maratzhe\SymfonyTypesense\Service\EventListener'
+    arguments:
+      $collectionManager: '@search.collection_manager'
+      $transformer: '@search.transformer'
+      $mapper: '@search.mapper'
+      $indexer: '@search.indexer'
+    tags:
+      - { name: 'doctrine.event_listener', event: 'postPersist', priority: '500', connection: 'default'  }
+      - { name: 'doctrine.event_listener', event: 'postUpdate', priority: '500', connection: 'default' }
+      - { name: 'doctrine.event_listener', event: 'preRemove', priority: '500', connection: 'default' }
+      - { name: 'doctrine.event_listener', event: 'postRemove', priority: '500', connection: 'default' }
+      - { name: 'doctrine.event_listener', event: 'postFlush', priority: '500', connection: 'default' }
+
+  search.finder_factory:
+    class: 'Maratzhe\SymfonyTypesense\Factory\FinderFactory'
+    public: true
+    arguments:
+      $client: '@search.client'
+      $transformer: '@search.transformer'
+      $mapper: '@search.mapper'
+
+  Maratzhe\SymfonyTypesense\Factory\FinderFactory:
+    alias: 'search.finder_factory'
+
+
+  search.command.create:
+    class: 'Maratzhe\SymfonyTypesense\Command\CreateCommand'
+    arguments:
+      $collectionManager: '@search.collection_manager'
+      $mapper: '@search.mapper'
+    tags:
+      - 'console.command'
+
+  search.command.mapping:
+    class: 'Maratzhe\SymfonyTypesense\Command\MappingCommand'
+    arguments:
+      $collectionManager: '@search.collection_manager'
+      $mapper: '@search.mapper'
+    tags:
+      - 'console.command'
+
+  search.command.show:
+    class: 'Maratzhe\SymfonyTypesense\Command\ShowCommand'
+    arguments:
+      $collectionManager: '@search.collection_manager'
+      $mapper: '@search.mapper'
+    tags:
+      - 'console.command'
+
+  search.command.import:
+    class: 'Maratzhe\SymfonyTypesense\Command\ImportCommand'
+    arguments:
+      $mapper: '@search.mapper'
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
+      $indexer: '@search.indexer'
+    tags:
+      - 'console.command'

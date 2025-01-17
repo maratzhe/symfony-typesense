@@ -72,24 +72,22 @@ abstract class AbstractCommand extends Command
         }
 
         if (!$all && null === $index) {
-            $choice =$io->choice('Select index', $indexes);
+
+            $choice = $io->choice('Select index', array_values($indexes));
 
             $index  = is_scalar($choice) ? (string)$choice : '';
         }
 
-        if($all) {
-            return $indexes;
-        }
-        else {
-            $indexes    = array_filter($indexes, fn($val) => $val === $index);
-            if(empty($indexes)) {
+        if(!$all) {
+            $indexes = array_filter($indexes, fn($val) => $val === $index);
+            if (empty($indexes)) {
                 $io->error('Index "' . $index . '" not found');
 
                 return [];
             }
 
-            return $indexes;
         }
+        return $indexes;
     }
 
     protected function optionString(InputInterface $input, string $name) : string|null

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250116140322 extends AbstractMigration
+final class Version20250117081142 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -43,6 +43,9 @@ final class Version20250116140322 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             CREATE SEQUENCE product_non_sync_id_seq INCREMENT BY 1 MINVALUE 1 START 1
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE SEQUENCE product_on_side_relation_id_seq INCREMENT BY 1 MINVALUE 1 START 1
         SQL);
         $this->addSql(<<<'SQL'
             CREATE SEQUENCE product_partial_id_seq INCREMENT BY 1 MINVALUE 1 START 1
@@ -123,6 +126,12 @@ final class Version20250116140322 extends AbstractMigration
             CREATE TABLE product_non_sync (id INT NOT NULL, pattern VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
+            CREATE TABLE product_on_side_relation (id INT NOT NULL, company_id INT DEFAULT NULL, pattern VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE INDEX IDX_C4089D33979B1AD6 ON product_on_side_relation (company_id)
+        SQL);
+        $this->addSql(<<<'SQL'
             CREATE TABLE product_partial (id INT NOT NULL, properties_id INT DEFAULT NULL, colors JSON NOT NULL, pattern VARCHAR(255) DEFAULT NULL, price_price INT DEFAULT NULL, price_currency VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
@@ -174,6 +183,9 @@ final class Version20250116140322 extends AbstractMigration
             ALTER TABLE product ADD CONSTRAINT FK_D34A04AD3691D1CA FOREIGN KEY (properties_id) REFERENCES properties (id) NOT DEFERRABLE INITIALLY IMMEDIATE
         SQL);
         $this->addSql(<<<'SQL'
+            ALTER TABLE product_on_side_relation ADD CONSTRAINT FK_C4089D33979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id) NOT DEFERRABLE INITIALLY IMMEDIATE
+        SQL);
+        $this->addSql(<<<'SQL'
             ALTER TABLE product_partial ADD CONSTRAINT FK_7BDECB443691D1CA FOREIGN KEY (properties_id) REFERENCES properties_partial (id) NOT DEFERRABLE INITIALLY IMMEDIATE
         SQL);
         $this->addSql(<<<'SQL'
@@ -210,6 +222,9 @@ final class Version20250116140322 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             DROP SEQUENCE product_non_sync_id_seq CASCADE
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP SEQUENCE product_on_side_relation_id_seq CASCADE
         SQL);
         $this->addSql(<<<'SQL'
             DROP SEQUENCE product_partial_id_seq CASCADE
@@ -249,6 +264,9 @@ final class Version20250116140322 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE product DROP CONSTRAINT FK_D34A04AD3691D1CA
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE product_on_side_relation DROP CONSTRAINT FK_C4089D33979B1AD6
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE product_partial DROP CONSTRAINT FK_7BDECB443691D1CA
@@ -291,6 +309,9 @@ final class Version20250116140322 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE product_non_sync
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP TABLE product_on_side_relation
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE product_partial

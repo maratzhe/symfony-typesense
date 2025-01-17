@@ -157,11 +157,11 @@ class Mapper
 
             if($association instanceof InverseSideMapping) {
                 $one                = false;
-                $reverseProperty    = $relationMeta->getReflectionProperty($association->mappedBy);
+                $reverseProperty = $relationMeta->getReflectionProperties()[$association->mappedBy] ?? null;
             }
 
             if($association instanceof ManyToOneAssociationMapping && $association->inversedBy !== null) {
-                $reverseProperty    = $relationMeta->getReflectionProperty($association->inversedBy);
+                $reverseProperty = $relationMeta->getReflectionProperties()[$association->inversedBy] ?? null;
             }
 
 

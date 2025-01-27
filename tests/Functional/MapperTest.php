@@ -67,7 +67,7 @@ class MapperTest extends KernelTestCase
         $mapping        = Mapper::mapClasses($this->em());
         $collections    = Mapper::mapCollections($mapping);
 
-        $this->assertCount(6, $collections);
+        $this->assertCount(7, $collections);
     }
 
     public function testMapping() : void

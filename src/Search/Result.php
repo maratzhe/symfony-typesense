@@ -20,6 +20,10 @@ class Result
     public array $hits;
     public int $page;
 
+    public int $pages;
+
+    public int $per_page;
+
     public int $out_of;
     public int $search_time_ms;
 
@@ -41,6 +45,7 @@ class Result
             );
         }
 
+
 //        $this->facet_counts = $result['facetCounts'] ?? null;
         $this->facet_counts = 0;
         $this->found = (int)($result['found'] ?? null);
@@ -48,5 +53,17 @@ class Result
         $this->page = (int)($result['page'] ?? null);
         $this->out_of = $result['out_of'];
         $this->search_time_ms = (int)($result['search_time_ms'] ?? null);
+
+        $pages      = 0;
+        $per_page   = isset($result['request_params']['per_page']) && is_scalar($result['request_params']['per_page'])
+            ? (int) $result['request_params']['per_page'] : 0;
+
+        if($per_page > 0) {
+            $pages     = (int)($this->found / $per_page);
+            $pages     += $this->found % $per_page > 0 ? 1 : 0;
+        }
+
+        $this->pages = $pages;
+        $this->per_page = $per_page;
     }
 }

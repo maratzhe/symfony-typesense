@@ -68,6 +68,10 @@ class Product
     #[SearchRelation(sync: SyncMode::AUTO, bulk: true)]
     public ?Properties $properties;
 
+    #[Column]
+    #[SearchField]
+    public bool $published;
+
     /**
      * @param CustomId|null $custom_id
      * @param array<int, Color> $colors
@@ -94,6 +98,7 @@ class Product
         $this->pattern          = $pattern;
         $this->price            = $price;
         $this->properties       = $properties;
+        $this->published        = false;
 
         foreach ($this->compositions as $composition) {
             $composition->product = $this;

@@ -278,7 +278,6 @@ class Mapper
                     }
 
                     $name   = $prefix . ($mapping->name ?? $field->name);
-
                     $type   = $mapping->type ?? FieldType::fromDoctrineType($field->type);
 
                     $fields[]  = [

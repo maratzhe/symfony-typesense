@@ -44,6 +44,7 @@ enum FieldType: string
             'json_document' => self::OBJECT_ARRAY,
             'json' => self::STRING_ARRAY,
             'double precision' => self::FLOAT,
+            'boolean'   => self::BOOL,
             default => self::STRING,
         };
     }

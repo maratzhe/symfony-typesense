@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250207095457 extends AbstractMigration
+final class Version20250207120840 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -111,7 +111,7 @@ final class Version20250207095457 extends AbstractMigration
             CREATE TABLE material_static_id (id INT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE product (id INT NOT NULL, properties_id INT DEFAULT NULL, custom_id UUID DEFAULT NULL, colors JSON NOT NULL, photos JSON NOT NULL, pattern VARCHAR(255) DEFAULT NULL, price_price INT DEFAULT NULL, price_currency VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
+            CREATE TABLE product (id INT NOT NULL, properties_id INT DEFAULT NULL, custom_id UUID DEFAULT NULL, colors JSON NOT NULL, photos JSON NOT NULL, pattern VARCHAR(255) DEFAULT NULL, published BOOLEAN NOT NULL, price_price INT DEFAULT NULL, price_currency VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
             CREATE UNIQUE INDEX UNIQ_D34A04AD3691D1CA ON product (properties_id)

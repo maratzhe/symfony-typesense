@@ -38,16 +38,16 @@ class ProductOnSideRelation
 
 
     /**
-     * @param Pattern $pattern
+     * @param ?Pattern $pattern
      * @param Company $company
      */
     public function __construct(
         #[Column(nullable: true)]
         #[SearchField]
-        public Pattern $pattern,
+        public ?Pattern $pattern,
 
         #[ManyToOne(targetEntity: Company::class, inversedBy: 'products')]
-        #[SearchRelation]
+//        #[SearchRelation]
         public Company $company
     )
     {

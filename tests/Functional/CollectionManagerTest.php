@@ -14,7 +14,7 @@ class CollectionManagerTest extends KernelTestCase
     public function testManager() : void
     {
         /** @var CollectionManager $manager */
-        $manager    = $this->getContainer()->get(CollectionManager::class);
+        $manager    = self::getContainer()->get(CollectionManager::class);
 
         if($manager->exists(Product::class)) {
             $manager->delete(Product::class);
@@ -22,6 +22,6 @@ class CollectionManagerTest extends KernelTestCase
 
         $collection = $manager->create(Product::class);
 
-        $this->assertArrayHasKey('created_at', $collection);
+        self::assertArrayHasKey('created_at', $collection);
     }
 }

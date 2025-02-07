@@ -16,7 +16,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class AbstractCommand extends Command
 {
-    protected Mapper $mapper;
+    public function __construct(
+        protected Mapper $mapper
+    )
+    {
+        parent::__construct();
+    }
+
+
 
     protected function configure(): void
     {
@@ -29,7 +36,7 @@ abstract class AbstractCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $collections = $this->getCollections($input, $io);
 
-        if (empty($collections)) {
+        if (count($collections) === 0) {
             return Command::FAILURE;
         }
 
@@ -65,7 +72,7 @@ abstract class AbstractCommand extends Command
             $indexes[$class->class]  = $class->collection->name;
         }
 
-        if (empty($indexes)) {
+        if (count($indexes) === 0) {
             $io->error('Indexes not found (try use '.SearchCollection::class.' first)');
 
             return [];
@@ -80,13 +87,14 @@ abstract class AbstractCommand extends Command
 
         if(!$all) {
             $indexes = array_filter($indexes, fn($val) => $val === $index);
-            if (empty($indexes)) {
+            if (count($indexes) === 0) {
                 $io->error('Index "' . $index . '" not found');
 
                 return [];
             }
 
         }
+
         return $indexes;
     }
 

@@ -21,10 +21,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MappingCommand extends AbstractCommand
 {
     public function __construct(
-        protected Mapper $mapper,
         protected CollectionManager $collectionManager,
+        Mapper $mapper,
     ) {
-        parent::__construct();
+        parent::__construct($mapper);
     }
 
     protected function configure(): void
@@ -35,7 +35,7 @@ class MappingCommand extends AbstractCommand
     }
 
     /**
-     * @param array<string, class-string> $collections
+     * @param array<class-string, string> $collections
      * @param SymfonyStyle $io
      * @param InputInterface $input
      * @return bool
@@ -53,12 +53,12 @@ class MappingCommand extends AbstractCommand
                     'name' => $field['name'],
                     'type' => $field['type'],
                     'locale' => $field['locale'],
-                    'optional' => $field['optional'] ? '<info>yes</info>' : '<comment>no</comment>',
-                    'facet' => $field['facet'] ? '<info>yes</info>' : '<comment>no</comment>',
-                    'index' => $field['index'] ? '<info>yes</info>' : '<comment>no</comment>',
-                    'infix' => $field['infix'] ? '<info>yes</info>' : '<comment>no</comment>',
-                    'sort' => $field['sort'] ? '<info>yes</info>' : '<comment>no</comment>',
-                    'stem' => $field['stem'] ? '<info>yes</info>' : '<comment>no</comment>',
+                    'optional' => $field['optional'] === true ? '<info>yes</info>' : '<comment>no</comment>',
+                    'facet' => $field['facet']  === true ? '<info>yes</info>' : '<comment>no</comment>',
+                    'index' => $field['index']  === true ? '<info>yes</info>' : '<comment>no</comment>',
+                    'infix' => $field['infix']  === true ? '<info>yes</info>' : '<comment>no</comment>',
+                    'sort' => $field['sort']  === true ? '<info>yes</info>' : '<comment>no</comment>',
+                    'stem' => $field['stem']  === true ? '<info>yes</info>' : '<comment>no</comment>',
                 ];
 
                 $rows[] = new TableSeparator();
@@ -69,7 +69,7 @@ class MappingCommand extends AbstractCommand
             $io->writeln('');
             $io->writeln(sprintf(' <info>Mapping of</info> <comment>%s</comment> (class: <comment>%s</comment>), %s', $collection, $class, $type));
 
-            $titles = !empty($fields) ? array_keys($fields[0]) : [];
+            $titles = count($fields) !== 0 ? array_keys($fields[0]) : [];
 
 
             $io->createTable()

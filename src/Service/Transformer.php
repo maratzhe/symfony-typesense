@@ -46,7 +46,7 @@ class Transformer
     public function normalize(object $model): array
     {
         $meta = $this->entityManager->getClassMetadata($model::class);
-        if (empty($meta->getIdentifierValues($model))) {
+        if (count($meta->getIdentifierValues($model)) === 0) {
             return [];
         }
 
@@ -83,12 +83,12 @@ class Transformer
             return [];
         }
 
-        if(!$mapperMeta->is_embedded && empty($meta->getIdentifierValues($model))) {
+        if(!$mapperMeta->is_embedded && count($meta->getIdentifierValues($model)) === 0) {
             return [];
         }
 
         foreach ($mapperMeta->fields as $field) {
-            if(!$initialized && !in_array($field->name, $identifiers)) {
+            if(!$initialized && !in_array($field->name, $identifiers, true)) {
                 continue;
             }
 
@@ -125,7 +125,7 @@ class Transformer
                 foreach ($value as $fv) {
                     /** @var object $fv */
                     $localMeta = $this->entityManager->getClassMetadata($fv::class);
-                    if (empty($localMeta->getIdentifierValues($fv))) {
+                    if (count($localMeta->getIdentifierValues($fv)) === 0) {
                         continue;
                     }
 
@@ -140,7 +140,7 @@ class Transformer
                 }
 
                 $localMeta = $this->entityManager->getClassMetadata($value::class);
-                if (empty($localMeta->getIdentifierValues($value))) {
+                if (count($localMeta->getIdentifierValues($value)) === 0) {
                     continue;
                 }
 
@@ -156,15 +156,16 @@ class Transformer
 
     /**
      * @template T of object
-     * @param string|class-string<T> $class
+     * @param class-string<T> $class
      * @param array<string, mixed> $fields
-     * @phpstan-return ($class is class-string<T> ? T : object)
+     * @return T
      * @throws ConversionException
      * @throws Exception
      */
     public function hydrate(string $class, array $fields): object
     {
         $meta   = $this->entityManager->getClassMetadata($class);
+        /** @var T $model */
         $model  = $meta->newInstance();
 
         $this->hydrateObject($model, $fields, '');

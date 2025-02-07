@@ -20,9 +20,9 @@ class CreateCommand extends AbstractCommand
 {
     public function __construct(
         protected CollectionManager $collectionManager,
-        protected Mapper $mapper,
+        Mapper $mapper,
     ) {
-        parent::__construct();
+        parent::__construct($mapper);
     }
 
     /**

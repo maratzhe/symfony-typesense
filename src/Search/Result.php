@@ -40,6 +40,7 @@ class Result
         }
 
 //        $this->facet_counts = $result['facetCounts'] ?? null;
+        $this->facet_counts = 0;
         $this->found = (int)($result['found'] ?? null);
         $this->hits = $hits;
         $this->page = (int)($result['page'] ?? null);

@@ -23,43 +23,44 @@ class MapperTest extends KernelTestCase
     public function testMapEmbeded() : void
     {
         $mapping    = Mapper::mapClass(Product::class, $this->em());
-        $this->assertInstanceOf(ClassMeta::class, $mapping);
-        $this->assertEquals(Product::class, $mapping->class);
-        $this->assertCount(6, $mapping->fields);
-        $this->assertCount(2, $mapping->relations);
-        $this->assertEquals(Price::class,  $mapping->fields['price']->embeddedClass);
+        self::assertInstanceOf(ClassMeta::class, $mapping);
+        self::assertEquals(Product::class, $mapping->class);
+        self::assertCount(6, $mapping->fields);
+        self::assertCount(2, $mapping->relations);
+        self::assertArrayHasKey('price', $mapping->fields);
+        self::assertEquals(Price::class,  $mapping->fields['price']->embeddedClass);
     }
 
     public function testCollectionDeepEmbeded() : void
     {
         $mapping        = Mapper::mapClasses($this->em());
         $collection     = Mapper::mapCollection(ProductDeepEmbeded::class, $mapping);
-        $this->assertNotNull($collection);
+        self::assertNotNull($collection);
 
-        $this->assertCount(5, $collection['fields']);
+        self::assertCount(5, $collection['fields']);
     }
 
     public function testCollectionPartial() : void
     {
         $mapping        = Mapper::mapClasses($this->em());
         $collection     = Mapper::mapCollection(ProductPartial::class, $mapping);
-        $this->assertNotNull($collection);
+        self::assertNotNull($collection);
 
-        $this->assertCount(10, $collection['fields']);
+        self::assertCount(10, $collection['fields']);
     }
 
     public function testMapRelations() : void
     {
         $mapping    = Mapper::mapClass(Properties::class, $this->em());
-        $this->assertInstanceOf(ClassMeta::class, $mapping);
-        $this->assertCount(3, $mapping->fields);
-        $this->assertCount(0, $mapping->relations);
+        self::assertInstanceOf(ClassMeta::class, $mapping);
+        self::assertCount(3, $mapping->fields);
+        self::assertCount(0, $mapping->relations);
 
 
         $mapping    = Mapper::mapClass(Composition::class, $this->em());
-        $this->assertInstanceOf(ClassMeta::class, $mapping);
-        $this->assertCount(2, $mapping->fields);
-        $this->assertCount(2, $mapping->relations);
+        self::assertInstanceOf(ClassMeta::class, $mapping);
+        self::assertCount(2, $mapping->fields);
+        self::assertCount(2, $mapping->relations);
     }
 
     public function testCollections() : void
@@ -67,7 +68,7 @@ class MapperTest extends KernelTestCase
         $mapping        = Mapper::mapClasses($this->em());
         $collections    = Mapper::mapCollections($mapping);
 
-        $this->assertCount(7, $collections);
+        self::assertCount(7, $collections);
     }
 
     public function testMapping() : void
@@ -288,7 +289,7 @@ class MapperTest extends KernelTestCase
         $mapper     = $this->mapper();
         $mapping    = $mapper->mapping(Product::class);
 
-        $this->assertMappingEquals($expected, $mapping['fields']);
+        self::assertMappingEquals($expected, $mapping['fields']);
     }
 
     public function testDeepEmbeded() : void
@@ -354,7 +355,7 @@ class MapperTest extends KernelTestCase
         $mapper     = $this->mapper();
         $mapping    = $mapper->mapping(ProductDeepEmbeded::class);
 
-        $this->assertMappingEquals($expected, $mapping['fields']);
+        self::assertMappingEquals($expected, $mapping['fields']);
     }
 
     public function testPartial() : void
@@ -475,7 +476,7 @@ class MapperTest extends KernelTestCase
         $mapper     = $this->mapper();
         $mapping    = $mapper->mapping(ProductPartial::class);
 
-        $this->assertMappingEquals($expected, $mapping['fields']);
+        self::assertMappingEquals($expected, $mapping['fields']);
     }
 
     /**
@@ -485,17 +486,17 @@ class MapperTest extends KernelTestCase
      */
     protected function assertMappingEquals(array $expected, array $actual) : void
     {
-        $this->assertCount(count($expected), $actual);
+        self::assertCount(count($expected), $actual);
 
         for ($i=0; $i<count($actual); $i++) {
-            $this->assertEquals($expected[$i], $actual[$i], 'index: ' . $i);
+            self::assertEquals($expected[$i], $actual[$i], 'index: ' . $i);
         }
     }
 
     protected function mapper() : Mapper
     {
         /** @var Mapper $mapper */
-        $mapper = $this->getContainer()->get(Mapper::class);
+        $mapper = self::getContainer()->get(Mapper::class);
 
         return $mapper;
     }
@@ -503,7 +504,7 @@ class MapperTest extends KernelTestCase
     protected function em() : EntityManagerInterface
     {
         /** @var EntityManagerInterface $em */
-        $em = $this->getContainer()->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         return $em;
     }

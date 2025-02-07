@@ -52,7 +52,7 @@ class ShowCommand extends Command
             $indexes[$class->collection->name]  = $class->class;
         }
 
-        if (empty($indexes)) {
+        if (count($indexes) === 0) {
             $io->error('Indexes not found (try use '.SearchCollection::class.' first)');
 
             return self::FAILURE;
@@ -75,7 +75,7 @@ class ShowCommand extends Command
         /** @var \TypesenseResult $result */
         $result = $collection->documents->search($query);
 
-        if (empty($result['hits'])) {
+        if (count($result['hits']) === 0) {
             $io->error('Entity "'.$id.'" not found in collection "'.$index.'"');
 
             return self::FAILURE;

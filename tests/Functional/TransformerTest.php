@@ -31,12 +31,12 @@ class TransformerTest extends KernelTestCase
         /**
          * @var Transformer $transformer
          */
-        $transformer    = $this->getContainer()->get(Transformer::class);
+        $transformer    = self::getContainer()->get(Transformer::class);
         $product        = $this->testProduct();
         $data           = $transformer->normalize($product);
         $expected       = $this->testData();
 
-        $this->assertEquals($expected, $data);
+        self::assertEquals($expected, $data);
     }
 
     public function testHydrate(): void
@@ -44,41 +44,41 @@ class TransformerTest extends KernelTestCase
         /**
          * @var Transformer $transformer
          */
-        $transformer    = $this->getContainer()->get(Transformer::class);
+        $transformer    = self::getContainer()->get(Transformer::class);
         $product        = $this->testProduct();
         $data           = $this->testData();
         $product2       = $transformer->hydrate(Product::class, $data);
 
-        $this->assertEquals($product->id, $product2->id);
-        $this->assertNotNull($product->custom_id);
-        $this->assertNotNull($product2->custom_id);
-        $this->assertTrue($product->custom_id->equals($product2->custom_id));
-        $this->assertNotNull($product->price);
-        $this->assertNotNull($product2->price);
-        $this->assertEquals($product->price->price, $product2->price->price);
-        $this->assertEquals($product->price->currency, $product2->price->currency);
-        $this->assertEquals($product->colors, $product2->colors);
-        $this->assertEquals($product->photos, $product2->photos);
-        $this->assertEquals($product->pattern, $product2->pattern);
+        self::assertEquals($product->id, $product2->id);
+        self::assertNotNull($product->custom_id);
+        self::assertNotNull($product2->custom_id);
+        self::assertTrue($product->custom_id->equals($product2->custom_id));
+        self::assertNotNull($product->price);
+        self::assertNotNull($product2->price);
+        self::assertEquals($product->price->price, $product2->price->price);
+        self::assertEquals($product->price->currency, $product2->price->currency);
+        self::assertEquals($product->colors, $product2->colors);
+        self::assertEquals($product->photos, $product2->photos);
+        self::assertEquals($product->pattern, $product2->pattern);
 
-        $this->assertCount(2, $product2->compositions);
+        self::assertCount(2, $product2->compositions);
 
 
         for($i=0; $i<count($product->compositions); $i++) {
-            $this->assertNotNull($product->compositions[$i]);
-            $this->assertNotNull($product2->compositions[$i]);
+            self::assertNotNull($product->compositions[$i]);
+            self::assertNotNull($product2->compositions[$i]);
 
-            $this->assertEquals($product->compositions[$i]->id, $product2->compositions[$i]->id);
-            $this->assertEquals($product->compositions[$i]->value, $product2->compositions[$i]->value);
-            $this->assertEquals($product->compositions[$i]->material->id, $product2->compositions[$i]->material->id);
-            $this->assertEquals($product->compositions[$i]->material->name, $product2->compositions[$i]->material->name);
+            self::assertEquals($product->compositions[$i]->id, $product2->compositions[$i]->id);
+            self::assertEquals($product->compositions[$i]->value, $product2->compositions[$i]->value);
+            self::assertEquals($product->compositions[$i]->material->id, $product2->compositions[$i]->material->id);
+            self::assertEquals($product->compositions[$i]->material->name, $product2->compositions[$i]->material->name);
         }
 
-        $this->assertNotNull($product->properties);
-        $this->assertNotNull($product2->properties);
-        $this->assertEquals($product->properties->id, $product2->properties->id);
-        $this->assertEquals($product->properties->value, $product2->properties->value);
-        $this->assertEquals($product->properties->name, $product2->properties->name);
+        self::assertNotNull($product->properties);
+        self::assertNotNull($product2->properties);
+        self::assertEquals($product->properties->id, $product2->properties->id);
+        self::assertEquals($product->properties->value, $product2->properties->value);
+        self::assertEquals($product->properties->name, $product2->properties->name);
     }
 
     protected function testProduct() : Product
@@ -102,7 +102,7 @@ class TransformerTest extends KernelTestCase
     protected function em() : EntityManagerInterface
     {
         /** @var EntityManagerInterface $em */
-        $em         = $this->getContainer()->get(EntityManagerInterface::class);
+        $em         = self::getContainer()->get(EntityManagerInterface::class);
         $events = ['postPersist', 'postUpdate', 'preRemove', 'postRemove', 'postFlush'];
         foreach ($events as $event) {
             $searched   = array_find($em->getEventManager()->getListeners($event), fn($ls) => $ls instanceof EventListener);

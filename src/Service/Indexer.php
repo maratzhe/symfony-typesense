@@ -47,7 +47,7 @@ class Indexer
         }
         $class  = $meta->class;
 
-        if(empty($this->persist[$class])) {
+        if(!isset($this->persist[$class])) {
             $this->persist[$class]    = [];
         }
 
@@ -71,12 +71,12 @@ class Indexer
 
         $class  = $meta->class;
 
-        if(empty($this->remove[$class])) {
+        if(!isset($this->remove[$class])) {
             $this->remove[$class]    = [];
         }
 
         $id     = $this->transformer->id($entity);
-        if(!in_array($id, $this->remove[$class])) {
+        if(!in_array($id, $this->remove[$class], true)) {
             $this->remove[$class][]   = $id;
         }
     }

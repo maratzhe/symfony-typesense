@@ -43,7 +43,9 @@
         "phpstan/phpstan": "2.1.x-dev",
         "friendsofphp/php-cs-fixer": "*",
         "phpstan/extension-installer": "1.4.x-dev",
-        "phpstan/phpstan-symfony": "2.0.x-dev"
+        "phpstan/phpstan-symfony": "2.0.x-dev",
+        "phpstan/phpstan-strict-rules": "2.0.x-dev",
+        "phpstan/phpstan-phpunit": "2.0.x-dev"
     },
     "config": {
         "allow-plugins": {
@@ -64,6 +66,10 @@
             "php tests/app/bin/console doctrine:database:create --env=test",
             "php tests/app/bin/console doctrine:migrations:diff -n --env=test",
             "php tests/app/bin/console doctrine:migrations:migrate -n --env=test"
+        ],
+        "cache" : [
+            "php tests/app/bin/console cache:clear",
+            "php tests/app/bin/console cache:clear --env=test"
         ],
         "phpstan" : "php ./vendor/bin/phpstan",
         "test" : "php ./vendor/bin/phpunit ./tests",

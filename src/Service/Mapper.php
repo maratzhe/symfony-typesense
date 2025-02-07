@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Embeddable;
 use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\Mapping\InverseSideMapping;
 use Doctrine\ORM\Mapping\ManyToOneAssociationMapping;
+use Doctrine\ORM\Mapping\MappingException;
 use Maratzhe\SymfonyTypesense\Attribute\SearchCollection;
 use Maratzhe\SymfonyTypesense\Attribute\SearchField;
 use Maratzhe\SymfonyTypesense\Attribute\SearchRelation;
@@ -84,7 +85,7 @@ class Mapper
      * @param class-string $class
      * @param EntityManagerInterface $entityManager
      * @return ClassMeta|null
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws MappingException
      */
     public static function mapClass(string $class, EntityManagerInterface $entityManager) : ?ClassMeta
     {
@@ -120,7 +121,7 @@ class Mapper
 
 
 
-            $identifier     = in_array($property->name, $meta->getIdentifierFieldNames());
+            $identifier     = in_array($property->name, $meta->getIdentifierFieldNames(), true);
             $embedded       = $property->getAttributes(Embedded::class)[0] ?? null;
             $mapping        = $meta->fieldMappings[$property->name] ?? null;
 
@@ -128,8 +129,8 @@ class Mapper
             $embeddedClass  = $embedded?->newInstance()->class ?? null;
 
 
-            if(!empty($attributes) || $identifier || $embedded !== null) {
-                if(empty($attributes) && $identifier) {
+            if(count($attributes) !== 0 || $identifier || $embedded !== null) {
+                if(count($attributes) === 0 && $identifier) {
                     $attributes[]   = new FieldMapping($property->name, null, '', true, false, false, false, false, false);
                 }
 
@@ -172,7 +173,7 @@ class Mapper
                     continue;
                 }
 
-                if(empty($reverseProperty->getAttributes(SearchRelation::class))) {
+                if(count($reverseProperty->getAttributes(SearchRelation::class)) === 0) {
                    continue;
                 }
             }
@@ -193,7 +194,7 @@ class Mapper
             );
         }
 
-        if($collection === null && empty($fields) && empty($relations)) {
+        if($collection === null && count($fields) === 0 && count($relations) === 0) {
             return null;
         }
 
@@ -331,7 +332,7 @@ class Mapper
     /**
      * @param EntityManagerInterface $entityManager
      * @return array<string, ClassMeta>
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws MappingException
      */
     public static function mapClasses(EntityManagerInterface $entityManager): array
     {

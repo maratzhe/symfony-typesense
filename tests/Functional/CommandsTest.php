@@ -75,13 +75,13 @@ class CommandsTest extends KernelTestCase
             'index' => 'product'
         ];
 
-        if ($perPage != null) {
+        if ($perPage !== null) {
             $options['--per-page'] = $perPage;
         }
-        if ($first != null) {
+        if ($first !== null) {
             $options['--first-page'] = $first;
         }
-        if ($lastPage != null) {
+        if ($lastPage !== null) {
             $options['--last-page'] = $lastPage;
         }
 
@@ -133,9 +133,12 @@ class CommandsTest extends KernelTestCase
                 $this->em()->flush();
                 $this->em()->clear();
 
-                /** @var BacktraceDebugDataHolder|null $debug */
-                $debug  = $this->getContainer()->get('doctrine.debug_data_holder');
-                $debug?->reset();
+
+                if(self::getContainer()->has('doctrine.debug_data_holder')) {
+                    /** @var BacktraceDebugDataHolder $debug */
+                    $debug  = self::getContainer()->get('doctrine.debug_data_holder');
+                    $debug->reset();
+                }
             }
         }
 
@@ -148,7 +151,7 @@ class CommandsTest extends KernelTestCase
     protected function em() : EntityManagerInterface
     {
         /** @var EntityManagerInterface $em */
-        $em = $this->getContainer()->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         return $em;
     }

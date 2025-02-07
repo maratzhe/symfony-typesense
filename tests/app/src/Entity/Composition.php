@@ -27,16 +27,21 @@ class Composition
     #[ManyToOne(targetEntity: Product::class, cascade: ['persist'], inversedBy: 'compositions')]
     public ?Product $product = null;
 
-    public function __construct(
-        #[ManyToOne(targetEntity: Material::class, cascade: ['persist'],  inversedBy: 'compositions')]
-        #[SearchRelation(sync: SyncMode::AUTO, bulk: false)]
-        public Material $material,
+    #[ManyToOne(targetEntity: Material::class, cascade: ['persist'],  inversedBy: 'compositions')]
+    #[SearchRelation(sync: SyncMode::AUTO, bulk: false)]
+    public Material $material;
 
-        #[Column]
-        #[SearchField]
-        public int $value
+    #[Column]
+    #[SearchField]
+    public int $value;
+
+    public function __construct(
+        Material $material,
+        int $value
     )
     {
+        $this->material = $material;
+        $this->value = $value;
         $this->material->compositions->add($this);
     }
 }

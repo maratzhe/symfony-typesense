@@ -10,8 +10,6 @@ use Maratzhe\SymfonyTypesense\Enum\SyncMode;
 #[BaseAttribute(BaseAttribute::TARGET_CLASS)]
 class SearchCollection
 {
-    public string $class;
-
     public function __construct(
         public ?string $name = null,
         public SyncMode $sync = SyncMode::NONE,

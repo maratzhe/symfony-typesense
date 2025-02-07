@@ -18,6 +18,9 @@ use App\Value\Pattern;
 use App\Value\Photo;
 use App\Value\Price;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
+use Http\Client\Exception;
 use Maratzhe\SymfonyTypesense\Factory\FinderFactory;
 use Maratzhe\SymfonyTypesense\Service\CollectionManager;
 use Maratzhe\SymfonyTypesense\Service\Finder;
@@ -25,6 +28,7 @@ use Maratzhe\SymfonyTypesense\Service\EventListener;
 use Maratzhe\SymfonyTypesense\Service\Indexer;
 use Maratzhe\SymfonyTypesense\Service\Transformer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Typesense\Exceptions\TypesenseClientError;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -56,8 +60,8 @@ class EventListenerTest extends KernelTestCase
         $em->flush();
 
         $productSr  = $this->searchById( $product->id, $product::class);
-        $this->assertNotEmpty($productSr);
-        $this->assertProductsEquals($product, $productSr);
+        self::assertNotEmpty($productSr);
+        self::assertProductsEquals($product, $productSr);
     }
 
 
@@ -72,31 +76,31 @@ class EventListenerTest extends KernelTestCase
 
 
         $productSr  = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
+        self::assertNotNull($productSr);
 
         $em->remove($product);
         $em->flush();
 
         $productDb  = $this->find($id, $product::class);
-        $this->assertNull($productDb);
+        self::assertNull($productDb);
 
         $productSr  = $this->searchById($id, $product::class);
-        $this->assertNull($productSr);
+        self::assertNull($productSr);
     }
 
     public function testEdit() : void
     {
         $product    = $this->getTestProduct();
         $em         = $this->em(['postUpdate', 'postFlush']);
-        $this->assertEquals(Pattern::Animal, $product->pattern);
+        self::assertEquals(Pattern::Animal, $product->pattern);
 
         $product->pattern = Pattern::Camouflage;
         $em->persist($product);
         $em->flush();
 
         $productSr = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
-        $this->assertProductsEquals($product, $productSr);
+        self::assertNotNull($productSr);
+        self::assertProductsEquals($product, $productSr);
     }
 
     public function testEditRelation() : void
@@ -104,10 +108,10 @@ class EventListenerTest extends KernelTestCase
         $product    = $this->getTestProduct([]);
         $em         = $this->em(['postUpdate', 'postFlush']);
 
-        $this->assertCount(2, $product->compositions);
-        $this->assertNotNull($product->compositions[1]);
+        self::assertCount(2, $product->compositions);
+        self::assertNotNull($product->compositions[1]);
         $material   = $product->compositions[1]->material;
-        $this->assertEquals('cotton', $material->name);
+        self::assertEquals('cotton', $material->name);
 
 
         $material->name = 'silk';
@@ -116,21 +120,21 @@ class EventListenerTest extends KernelTestCase
 
 
         $product  = $this->find($product->id, $product::class);
-        $this->assertNotNull($product);
+        self::assertNotNull($product);
         $productSr  = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
+        self::assertNotNull($productSr);
 
-        $this->assertNotNull($product->compositions[1]);
+        self::assertNotNull($product->compositions[1]);
         $material = $product->compositions[1]->material;
-        $this->assertEquals('silk', $material->name);
+        self::assertEquals('silk', $material->name);
 
-        $this->assertProductsEquals($product, $productSr);
+        self::assertProductsEquals($product, $productSr);
     }
 
     public function testAddRelation() : void
     {
         $product    = $this->getTestProduct([]);
-        $this->assertCount(2, $product->compositions);
+        self::assertCount(2, $product->compositions);
 
         $composition                = new Composition( new Material('test'), 30);
         $composition->product       = $product;
@@ -142,13 +146,13 @@ class EventListenerTest extends KernelTestCase
         $em->flush();
 
         $product    = $this->find($product->id, $product::class);
-        $this->assertNotNull($product);
+        self::assertNotNull($product);
 
         $productSr  = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
+        self::assertNotNull($productSr);
 
-        $this->assertCount(3, $product->compositions);
-        $this->assertProductsEquals($product, $productSr);
+        self::assertCount(3, $product->compositions);
+        self::assertProductsEquals($product, $productSr);
     }
 
     public function testRemoveRelation() : void
@@ -162,15 +166,15 @@ class EventListenerTest extends KernelTestCase
         $em->clear();
 
         $product    = $this->find($product->id, $product::class);
-        $this->assertNotNull($product);
+        self::assertNotNull($product);
 
         $productSr  = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
+        self::assertNotNull($productSr);
 
-        $this->assertCount(1, $product->compositions);
+        self::assertCount(1, $product->compositions);
 
 
-        $this->assertProductsEquals($product, $productSr);
+        self::assertProductsEquals($product, $productSr);
     }
 
     public function testSyncNoneCollection() : void
@@ -183,14 +187,14 @@ class EventListenerTest extends KernelTestCase
         $em->flush();
 
         $productSr = $this->searchById($product->id, $product::class);
-        $this->assertNull($productSr);
+        self::assertNull($productSr);
 
         $this->indexer()->persist($product);
         $this->indexer()->flush();
 
         $productSr = $this->searchById($product->id, $product::class);
 
-        $this->assertNotNull($productSr);
+        self::assertNotNull($productSr);
     }
 
     public function testNonSyncRelation() : void
@@ -210,55 +214,55 @@ class EventListenerTest extends KernelTestCase
         $this->em()->persist($product);
         $this->em()->flush();
 
-        $this->assertNotNull($product->compositions[0]);
-        $this->assertNotNull($product->compositions[1]);
-        $this->assertNotNull($product->properties);
+        self::assertNotNull($product->compositions[0]);
+        self::assertNotNull($product->compositions[1]);
+        self::assertNotNull($product->properties);
 
         $this->indexer()->persist($product);
         $this->indexer()->flush();
 
         $productSr = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
-        $this->assertCount(2, $productSr->compositions);
-        $this->assertNotNull($productSr->compositions[0]);
-        $this->assertNotNull($productSr->compositions[1]);
-        $this->assertNotNull($productSr->properties);
+        self::assertNotNull($productSr);
+        self::assertCount(2, $productSr->compositions);
+        self::assertNotNull($productSr->compositions[0]);
+        self::assertNotNull($productSr->compositions[1]);
+        self::assertNotNull($productSr->properties);
 
 
-        $this->assertEquals($product->id, $productSr->id);
-        $this->assertNotNull($product->compositions[0]);
-        $this->assertEquals($product->compositions[0]->id, $productSr->compositions[0]->id);
-        $this->assertEquals($product->compositions[0]->value, $productSr->compositions[0]->value);
-        $this->assertEquals($product->compositions[0]->material->name, $productSr->compositions[0]->material->name);
+        self::assertEquals($product->id, $productSr->id);
+        self::assertNotNull($product->compositions[0]);
+        self::assertEquals($product->compositions[0]->id, $productSr->compositions[0]->id);
+        self::assertEquals($product->compositions[0]->value, $productSr->compositions[0]->value);
+        self::assertEquals($product->compositions[0]->material->name, $productSr->compositions[0]->material->name);
 
-        $this->assertNotNull($product->compositions[1]);
-        $this->assertEquals($product->compositions[1]->id, $productSr->compositions[1]->id);
-        $this->assertEquals($product->compositions[1]->value, $productSr->compositions[1]->value);
-        $this->assertEquals($product->compositions[1]->material->name, $productSr->compositions[1]->material->name);
+        self::assertNotNull($product->compositions[1]);
+        self::assertEquals($product->compositions[1]->id, $productSr->compositions[1]->id);
+        self::assertEquals($product->compositions[1]->value, $productSr->compositions[1]->value);
+        self::assertEquals($product->compositions[1]->material->name, $productSr->compositions[1]->material->name);
 
-        $this->assertNotNull($productSr->properties);
-        $this->assertNotNull($product->properties);
-        $this->assertEquals($product->properties->name, $productSr->properties->name);
-        $this->assertEquals($product->properties->value, $productSr->properties->value);
+        self::assertNotNull($productSr->properties);
+        self::assertNotNull($product->properties);
+        self::assertEquals($product->properties->name, $productSr->properties->name);
+        self::assertEquals($product->properties->value, $productSr->properties->value);
 
 
         $material   = $product->compositions[1]->material;
-        $this->assertEquals('cotton', $material->name);
+        self::assertEquals('cotton', $material->name);
 
         $material->name = 'silk';
         $this->em()->persist($material);
         $this->em()->flush();
 
         $product    = $this->find($product->id, ProductRelationsNonSync::class);
-        $this->assertNotNull($product);
-        $this->assertNotNull($product->compositions[1]);
+        self::assertNotNull($product);
+        self::assertNotNull($product->compositions[1]);
 
-        $this->assertEquals('silk', $product->compositions[1]->material->name);
+        self::assertEquals('silk', $product->compositions[1]->material->name);
 
         $productSr = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
-        $this->assertNotNull($productSr->compositions[1]);
-        $this->assertEquals('cotton', $productSr->compositions[1]->material->name);
+        self::assertNotNull($productSr);
+        self::assertNotNull($productSr->compositions[1]);
+        self::assertEquals('cotton', $productSr->compositions[1]->material->name);
 
 
         $product->compositions->remove(0);
@@ -267,67 +271,67 @@ class EventListenerTest extends KernelTestCase
         $this->em()->clear();
 
         $product    = $this->find($product->id, ProductRelationsNonSync::class);
-        $this->assertNotNull($product);
-        $this->assertCount(1, $product->compositions);
+        self::assertNotNull($product);
+        self::assertCount(1, $product->compositions);
 
         $productSr = $this->searchById($product->id, $product::class);
-        $this->assertNotNull($productSr);
-        $this->assertCount(2, $productSr->compositions);
+        self::assertNotNull($productSr);
+        self::assertCount(2, $productSr->compositions);
     }
 
     protected function assertProductsEquals(Product $product, Product $productSr) : void
     {
-        $this->assertEquals($product->id, $productSr->id);
+        self::assertEquals($product->id, $productSr->id);
 
         if($product->custom_id !== null) {
-            $this->assertNotNull($productSr->custom_id);
-            $this->assertTrue($product->custom_id->equals($productSr->custom_id));
+            self::assertNotNull($productSr->custom_id);
+            self::assertTrue($product->custom_id->equals($productSr->custom_id));
         }
         else {
-            $this->assertNull($productSr->custom_id);
+            self::assertNull($productSr->custom_id);
         }
 
 
-        $this->assertEquals($product->pattern, $productSr->pattern);
+        self::assertEquals($product->pattern, $productSr->pattern);
 
         if($product->price !== null) {
-            $this->assertNotNull($productSr->price);
-            $this->assertEquals($product->price->price, $productSr->price->price);
-            $this->assertEquals($product->price->currency, $productSr->price->currency);
+            self::assertNotNull($productSr->price);
+            self::assertEquals($product->price->price, $productSr->price->price);
+            self::assertEquals($product->price->currency, $productSr->price->currency);
         }
         else {
-            $this->assertNull($productSr->price);
+            self::assertNull($productSr->price);
         }
 
-        $this->assertCount(count($product->colors), $productSr->colors);
+        self::assertCount(count($product->colors), $productSr->colors);
         for($i=0; $i<count($product->colors); $i++){
-            $this->assertEquals($product->colors[$i], $productSr->colors[$i]);
+            self::assertEquals($product->colors[$i], $productSr->colors[$i]);
         }
 
-        $this->assertCount(count($product->photos), $productSr->photos);
+        self::assertCount(count($product->photos), $productSr->photos);
         for($i=0; $i<count($product->photos); $i++){
-            $this->assertEquals($product->photos[$i]->size, $productSr->photos[$i]->size);
-            $this->assertEquals($product->photos[$i]->url, $productSr->photos[$i]->url);
+            self::assertEquals($product->photos[$i]->size, $productSr->photos[$i]->size);
+            self::assertEquals($product->photos[$i]->url, $productSr->photos[$i]->url);
         }
 
-        $this->assertCount(count($product->compositions), $productSr->compositions);
+        self::assertCount(count($product->compositions), $productSr->compositions);
         for($i=0; $i<count($product->compositions); $i++){
-            $this->assertNotNull($productSr->compositions[$i]);
-            $this->assertNotNull($product->compositions[$i]);
+            self::assertNotNull($productSr->compositions[$i]);
+            self::assertNotNull($product->compositions[$i]);
 
-            $this->assertEquals($product->compositions[$i]->id, $productSr->compositions[$i]->id);
-            $this->assertEquals($product->compositions[$i]->material->id, $productSr->compositions[$i]->material->id);
-            $this->assertEquals($product->compositions[$i]->material->name, $productSr->compositions[$i]->material->name);
+            self::assertEquals($product->compositions[$i]->id, $productSr->compositions[$i]->id);
+            self::assertEquals($product->compositions[$i]->material->id, $productSr->compositions[$i]->material->id);
+            self::assertEquals($product->compositions[$i]->material->name, $productSr->compositions[$i]->material->name);
         }
 
         if($product->properties !== null) {
-            $this->assertNotNull($productSr->properties);
-            $this->assertEquals($product->properties->id, $productSr->properties->id);
-            $this->assertEquals($product->properties->name, $productSr->properties->name);
-            $this->assertEquals($product->properties->value, $productSr->properties->value);
+            self::assertNotNull($productSr->properties);
+            self::assertEquals($product->properties->id, $productSr->properties->id);
+            self::assertEquals($product->properties->name, $productSr->properties->name);
+            self::assertEquals($product->properties->value, $productSr->properties->value);
         }
         else {
-            $this->assertNull($productSr->properties);
+            self::assertNull($productSr->properties);
         }
     }
 
@@ -339,13 +343,13 @@ class EventListenerTest extends KernelTestCase
     protected function em(array $allowed = []) : EntityManagerInterface
     {
         /** @var EntityManagerInterface $em */
-        $em         = $this->getContainer()->get(EntityManagerInterface::class);
+        $em         = self::getContainer()->get(EntityManagerInterface::class);
 
         $events = ['postPersist', 'postUpdate', 'preRemove', 'postRemove', 'postFlush'];
         foreach ($events as $event) {
             $searched   = array_find($em->getEventManager()->getListeners($event), fn($ls) => $ls instanceof EventListener);
 
-            if(in_array($event, $allowed)) {
+            if(in_array($event, $allowed, true)) {
                 if($searched === null) {
                     $em->getEventManager()->addEventListener($event, $this->listener());
                 }
@@ -364,7 +368,7 @@ class EventListenerTest extends KernelTestCase
     protected function checkIndex() : void
     {
         /** @var CollectionManager $manager */
-        $manager    = $this->getContainer()->get(CollectionManager::class);
+        $manager    = self::getContainer()->get(CollectionManager::class);
 
         $classes    = [
             Product::class,
@@ -412,14 +416,14 @@ class EventListenerTest extends KernelTestCase
      * @param ?int $id
      * @param class-string<T> $finder
      * @return T|null
-     * @throws \Http\Client\Exception
-     * @throws \Typesense\Exceptions\TypesenseClientError
+     * @throws Exception
+     * @throws TypesenseClientError
      */
     protected function searchById(?int $id, string $finder) : object|null
     {
         $result = $this->finder($finder)->query()->filterBy('id :=' . $id)->getResult();
 
-        if(empty($result->hits)) {
+        if(count($result->hits) === 0) {
             return null;
         }
 
@@ -431,8 +435,8 @@ class EventListenerTest extends KernelTestCase
      * @param int|null $id
      * @param class-string<T> $class
      * @return T|null
-     * @throws \Doctrine\ORM\Exception\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function find(?int $id, string $class) : object|null
     {
@@ -447,7 +451,7 @@ class EventListenerTest extends KernelTestCase
     protected function finder(string $finder) : Finder
     {
         /** @var FinderFactory $factory */
-        $factory    = $this->getContainer()->get(FinderFactory::class);
+        $factory    = self::getContainer()->get(FinderFactory::class);
 
         return $factory->create($finder);
     }
@@ -455,7 +459,7 @@ class EventListenerTest extends KernelTestCase
     protected function listener() : EventListener
     {
         /** @var EventListener $indexer */
-        $indexer   = $this->getContainer()->get(EventListener::class);
+        $indexer   = self::getContainer()->get(EventListener::class);
 
         return $indexer;
     }
@@ -463,7 +467,7 @@ class EventListenerTest extends KernelTestCase
     protected function indexer() : Indexer
     {
         /** @var Indexer $indexer */
-        $indexer   = $this->getContainer()->get(Indexer::class);
+        $indexer   = self::getContainer()->get(Indexer::class);
 
         return $indexer;
     }
@@ -471,7 +475,7 @@ class EventListenerTest extends KernelTestCase
     protected function manager() : CollectionManager
     {
         /** @var CollectionManager $manager */
-        $manager   = $this->getContainer()->get(CollectionManager::class);
+        $manager   = self::getContainer()->get(CollectionManager::class);
 
         return $manager;
     }
@@ -479,7 +483,7 @@ class EventListenerTest extends KernelTestCase
     protected function transformer() : Transformer
     {
         /** @var Transformer $transformer */
-        $transformer = $this->getContainer()->get(Transformer::class);
+        $transformer = self::getContainer()->get(Transformer::class);
 
         return $transformer;
     }

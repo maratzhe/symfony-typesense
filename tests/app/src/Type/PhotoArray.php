@@ -10,17 +10,33 @@ use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\JsonType;
 
 
+
+/**
+ *
+ *
+ */
 class PhotoArray extends JsonType
 {
+//    /**
+//     * @template T
+//     * @param T $value
+//     * @param AbstractPlatform $platform
+//     * @return string
+//     * @throws ConversionException
+//     */
+
     /**
-     * @param Photo[] $value
+     * @template T
+     * @param T $value
      * @param AbstractPlatform $platform
-     * @return string|null
+     * @return string
      * @throws ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform) : ?string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform) : string
     {
-        $data   = array_map(function (Photo $item) {
+        assert(is_array($value));
+        $data   = array_map(function (mixed $item) {
+            /** @var Photo $item */
             return ['size' => $item->size, 'url' => $item->url];
         } , $value);
 

@@ -25,10 +25,10 @@ class ImportCommand extends AbstractCommand
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        protected Mapper $mapper,
         protected Indexer $indexer,
+        Mapper $mapper,
     ) {
-        parent::__construct('search:import');
+        parent::__construct($mapper);
     }
 
     protected function configure(): void

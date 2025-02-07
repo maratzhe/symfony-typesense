@@ -7,6 +7,10 @@ parameters:
         \TypesenseHit: 'array{document: \TypesenseDocument, highlight: \TypesenseHighlight,text_match: int|null, text_match_info: \TypesenseTextMatchInfo|null}'
         \TypesenseResult: 'array{hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null}'
     level: 10
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    rememberPossiblyImpureFunctionValues: true
+    checkBenevolentUnionTypes: true
+    checkMissingCallableSignature: true
     paths:
         - src
         - tests/app/src

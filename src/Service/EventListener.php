@@ -127,7 +127,7 @@ class EventListener
             }
         }
 
-        if(empty($meta->relations)) {
+        if(count($meta->relations) === 0) {
             return [];
         }
 

@@ -80,7 +80,6 @@ class IndexerTest extends KernelTestCase
 
         $data   = $this->indexer()->toPersist();
 
-
         self::assertNotEmpty($data);
         self::assertArrayHasKey(Product::class, $data);
         self::assertCount(2, $data[Product::class]);

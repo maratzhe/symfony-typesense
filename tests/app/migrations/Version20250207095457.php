@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250206152449 extends AbstractMigration
+final class Version20250207095457 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -126,7 +126,7 @@ final class Version20250206152449 extends AbstractMigration
             CREATE TABLE product_non_sync (id INT NOT NULL, pattern VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE product_on_side_relation (id INT NOT NULL, company_id INT NOT NULL, pattern VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
+            CREATE TABLE product_on_side_relation (id INT NOT NULL, company_id INT DEFAULT NULL, pattern VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
             CREATE INDEX IDX_C4089D33979B1AD6 ON product_on_side_relation (company_id)

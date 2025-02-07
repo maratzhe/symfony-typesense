@@ -6,6 +6,7 @@ namespace Maratzhe\SymfonyTypesense\Attribute;
 
 use Attribute as BaseAttribute;
 use Maratzhe\SymfonyTypesense\Enum\FieldType;
+use Closure;
 
 #[BaseAttribute(BaseAttribute::TARGET_PROPERTY | BaseAttribute::IS_REPEATABLE)]
 class SearchField
@@ -19,7 +20,7 @@ class SearchField
         public bool $index = false,
         public bool $infix = false,
         public bool $sort = false,
-        public bool $stem = false,
+        public bool $stem = false
     ) {
     }
 }

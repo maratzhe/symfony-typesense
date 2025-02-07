@@ -23,6 +23,7 @@ use Maratzhe\SymfonyTypesense\Attribute\SearchField;
 use Maratzhe\SymfonyTypesense\Attribute\SearchRelation;
 use Maratzhe\SymfonyTypesense\Enum\FieldType;
 use Maratzhe\SymfonyTypesense\Enum\SyncMode;
+use DateTimeImmutable;
 
 
 #[Entity]

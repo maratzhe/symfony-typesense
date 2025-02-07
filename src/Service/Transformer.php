@@ -87,6 +87,7 @@ class Transformer
             return [];
         }
 
+
         foreach ($mapperMeta->fields as $field) {
             if(!$initialized && !in_array($field->name, $identifiers, true)) {
                 continue;

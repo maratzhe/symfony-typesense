@@ -5,7 +5,7 @@ parameters:
         \TypesenseHighlight: 'array<string, string>'
         \TypesenseTextMatchInfo: 'array<string,mixed>'
         \TypesenseHit: 'array{document: \TypesenseDocument, highlight: \TypesenseHighlight,text_match: int|null, text_match_info: \TypesenseTextMatchInfo|null}'
-        \TypesenseResult: 'array{hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null}'
+        \TypesenseResult: 'array{hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null, out_of: int}'
     level: 10
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     rememberPossiblyImpureFunctionValues: true

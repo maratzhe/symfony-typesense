@@ -58,6 +58,7 @@ class Finder
          */
         $result = $this->client->collections[$this->mapper->mapping($this->class)['name']]->documents->search($query->getParameters());
 
+
         return new Result($this->transformer, $this->class, $result);
     }
 

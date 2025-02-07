@@ -19,6 +19,8 @@ class Result
      */
     public array $hits;
     public int $page;
+
+    public int $out_of;
     public int $search_time_ms;
 
     /**
@@ -44,6 +46,7 @@ class Result
         $this->found = (int)($result['found'] ?? null);
         $this->hits = $hits;
         $this->page = (int)($result['page'] ?? null);
+        $this->out_of = $result['out_of'];
         $this->search_time_ms = (int)($result['search_time_ms'] ?? null);
     }
 }

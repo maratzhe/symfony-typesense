@@ -78,7 +78,7 @@ class Mapper
      */
     public function mapping(string $class) : array
     {
-        return $this->collections[$class] ?? ['name' => '', 'enable_nested_fields' => false, 'fields' => []];
+        return $this->collections[$class] ?? ['name' => '', 'enable_nested_fields' => true, 'fields' => []];
     }
 
     /**

@@ -98,12 +98,12 @@ class MapperTest extends KernelTestCase
                 'stem'      => false
             ],
             2 => [
-                'name'      => 'colors.*',
+                'name'      => 'colors',
                 'type'      => 'int32[]',
                 'locale'    => '',
                 'optional'  => true,
-                'facet'     => false,
-                'index'     => false,
+                'facet'     => true,
+                'index'     => true,
                 'infix'     => false,
                 'sort'      => false,
                 'stem'      => false
@@ -146,8 +146,8 @@ class MapperTest extends KernelTestCase
                 'type'      => 'string',
                 'locale'    => '',
                 'optional'  => true,
-                'facet'     => false,
-                'index'     => false,
+                'facet'     => true,
+                'index'     => true,
                 'infix'     => false,
                 'sort'      => false,
                 'stem'      => false
@@ -180,7 +180,7 @@ class MapperTest extends KernelTestCase
                 'locale'    => '',
                 'optional'  => true,
                 'facet'     => false,
-                'index'     => false,
+                'index'     => true,
                 'infix'     => false,
                 'sort'      => false,
                 'stem'      => false

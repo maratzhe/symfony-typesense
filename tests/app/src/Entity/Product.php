@@ -42,7 +42,7 @@ class Product
 
     /** @var array<int, Color>  */
     #[Column(type: 'color_array')]
-    #[SearchField(name: 'colors.*', type: FieldType::INT32_ARRAY)]
+    #[SearchField(name: 'colors', type: FieldType::INT32_ARRAY, index: true, facet: true)]
     public array $colors;
 
     /** @var array<int, Photo>  */
@@ -53,7 +53,7 @@ class Product
     public array $photos;
 
     #[Column(nullable: true)]
-    #[SearchField]
+    #[SearchField(facet:true, index: true)]
     public ?Pattern $pattern;
 
     #[Embedded(class: Price::class)]
@@ -69,7 +69,7 @@ class Product
     public ?Properties $properties;
 
     #[Column]
-    #[SearchField]
+    #[SearchField(index: true)]
     public bool $published;
 
     /**
@@ -88,7 +88,8 @@ class Product
         ?Pattern $pattern = null,
         ?Price $price = null,
         array $compositions = [],
-        ?Properties $properties = null
+        ?Properties $properties = null,
+        bool $published = false
     )
     {
         $this->custom_id        = $custom_id;
@@ -98,7 +99,7 @@ class Product
         $this->pattern          = $pattern;
         $this->price            = $price;
         $this->properties       = $properties;
-        $this->published        = false;
+        $this->published        = $published;
 
         foreach ($this->compositions as $composition) {
             $composition->product = $this;

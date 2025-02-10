@@ -116,15 +116,15 @@ class TransformerTest extends KernelTestCase
     }
 
     /**
-     * @return array<string, int|string|float|bool|null>
+     * @return array<string, int|string|float|bool|null|array<int, mixed>>
      */
     protected function testData() : array
     {
         return [
             'id'    => '1',
             'custom_id' => '01944071-3781-70e3-89aa-f00b80fd401d',
-            'colors' => '[0,2]',
-            'photos' => '[{"size":100,"url":"test_url"}]',
+            'colors' => [0,2],
+            'photos' => [['size' => 100, 'url' => 'test_url']],
             'pattern' => 'animal',
             'price.price'   => 32,
             'price.currency' => 'eur',

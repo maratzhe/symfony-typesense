@@ -59,8 +59,12 @@ class EventListener
                 $this->persisted[$class] = [];
             }
 
-            $this->persisted[$class][] = $this->transformer->id($root);
+            $id     = $this->transformer->id($root);
+            if($id === '') {
+                continue;
+            }
 
+            $this->persisted[$class][] = $this->transformer->id($root);
             $this->indexer->persist($root);
         }
     }

@@ -10,4 +10,6 @@ enum Pattern : string
     case Floral         = 'floral';
     case Animal         = 'animal';
     case Camouflage     = 'camouflage';
+
+    case Fret           = 'fret';
 }

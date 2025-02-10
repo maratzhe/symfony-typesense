@@ -1,11 +1,12 @@
 parameters:
     typeAliases:
         \TypesenseField: 'array<int, array{name: string, type: string, locale: string, optional: bool, facet: bool, index: bool, infix: bool, sort: bool, stem: bool}>'
-        \TypesenseDocument: 'array<string, string|int|float|bool|null>'
+        \TypesenseDocument: 'array<string, string|int|float|bool|array<string|int, mixed>>'
         \TypesenseHighlight: 'array<string, string>'
         \TypesenseTextMatchInfo: 'array<string,mixed>'
         \TypesenseHit: 'array{document: \TypesenseDocument, highlight: \TypesenseHighlight,text_match: int|null, text_match_info: \TypesenseTextMatchInfo|null}'
-        \TypesenseResult: 'array{hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null, out_of: int, request_params: array<string, mixed>}'
+        \TypesenseFacet: 'array{field_name: string, sampled: bool, stats: array{total_values: int}, counts: array<int, array{count: int, highlighted:string, value:string|int|float}>  }'
+        \TypesenseResult: 'array{error: ?string, facet_counts: array<int, \TypesenseFacet>, hits: array<int, \TypesenseHit>, found: int|null, page: int|null, search_time_ms: int|null, out_of: int, request_params: array<string, mixed>}'
     level: 10
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
     rememberPossiblyImpureFunctionValues: true

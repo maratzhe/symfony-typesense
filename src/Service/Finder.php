@@ -62,28 +62,40 @@ class Finder
         return new Result($this->transformer, $this->class, $result);
     }
 
-    //    public function multiSearch(array $searchRequests, ?TypesenseQuery $commonSearchParams = null)
-    //    {
-    //        if (!$this->client->isOperationnal()) {
-    //            return null;
-    //        }
-    //
-    //        $searches = [];
-    //        foreach ($searchRequests as $sr) {
-    //            if (!$sr instanceof TypesenseQuery) {
-    //                throw new \Exception('searchRequests must be an array  of TypesenseQuery objects');
-    //            }
-    //            if (!$sr->hasParameter('collection')) {
-    //                throw new \Exception('TypesenseQuery must have the key : `collection` in order to perform multiSearch');
-    //            }
-    //            $searches[] = $sr->getParameters();
-    //        }
-    //
-    //        return $this->client->multiSearch->perform(
-    //            [
-    //                'searches' => $searches,
-    //            ],
-    //            $commonSearchParams ? $commonSearchParams->getParameters() : []
-    //        );
-    //    }
+    /**
+     * @param Query<T>[] $queries
+     * @param Query<T>|null $common
+     * @return Result<T>[]
+     * @throws \Http\Client\Exception
+     * @throws \Typesense\Exceptions\TypesenseClientError
+     */
+    public function multiSearch(array $queries, ?Query $common = null): array
+    {
+
+        $searches = [];
+        foreach ($queries as $query) {
+            $searches[] = [...$query->getParameters(), ...['collection' => $this->mapper->mapping($this->class)['name']]];
+        }
+
+        /**
+         * @var array{results: \TypesenseResult[]} $results
+         */
+        $results    = $this->client->multiSearch->perform(
+            [
+                'searches' => $searches,
+            ],
+            $common !== null ? $common->getParameters() : []
+        );
+
+        $return     = [];
+        foreach ($results['results'] as $result) {
+            if(isset($result['error'])) {
+                throw new \RuntimeException($result['error']);
+            }
+
+            $return[] = new Result($this->transformer, $this->class, $result);
+        }
+
+        return $return;
+    }
 }

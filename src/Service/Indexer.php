@@ -10,7 +10,7 @@ use Exception;
 class Indexer
 {
     /**
-     * @var array<class-string, array<string, array<string, string|null|int|float|bool>>> $persist
+     * @var array<class-string, array<string, mixed>> $persist
      */
     protected array $persist = [];
 
@@ -84,11 +84,19 @@ class Indexer
     public function flush(): void
     {
         foreach ($this->persist as $class => $entities) {
-            $this->collectionManager->get($class)->documents->import($entities, ['action' => 'upsert']);
+            /** @var array{0: array{error: ?string}} $result */
+            $result     = $this->collectionManager->get($class)->documents->import($entities, ['action' => 'upsert']);
+            if(isset($result[0]['error'])) {
+                throw new Exception($result[0]['error']);
+            }
         }
 
         foreach ($this->remove as $class => $ids) {
+            /** @var array{0: array{error: ?string}} $result */
             $this->collectionManager->get($class)->documents->delete(['filter_by' => 'id:[' . implode(',', $ids) . ']']);
+            if(isset($result[0]['error'])) {
+                throw new Exception($result[0]['error']);
+            }
         }
 
         $this->persist  = [];
@@ -96,7 +104,7 @@ class Indexer
     }
 
     /**
-     * @return array<class-string, array<string, array<string, string|null|int|float|bool>>>
+     * @return array<class-string, array<string, mixed>>
      */
     public function toPersist(): array
     {

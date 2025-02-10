@@ -11,7 +11,10 @@ use Maratzhe\SymfonyTypesense\Service\Transformer;
  */
 class Result
 {
-    public ?int $facet_counts;
+    /**
+     * @var array<int, array{field_name: string, sampled: bool, stats: array{total_values: int}, counts: array<int, array{count: int, highlighted:string, value:string|int|float}>  }>
+     */
+    public array $facet_counts;
     public int $found;
 
     /**
@@ -46,8 +49,8 @@ class Result
         }
 
 
-//        $this->facet_counts = $result['facetCounts'] ?? null;
-        $this->facet_counts = 0;
+
+        $this->facet_counts = $result['facet_counts'];
         $this->found = (int)($result['found'] ?? null);
         $this->hits = $hits;
         $this->page = (int)($result['page'] ?? null);

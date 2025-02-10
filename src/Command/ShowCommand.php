@@ -85,6 +85,10 @@ class ShowCommand extends Command
         $rows = [];
 
         foreach ($document as $key => $value) {
+            if(is_array($value)) {
+                $value = json_encode($value);
+            }
+
             $rows[] = [$key, u((string) $value)->wordwrap(120, cut: true)];
             $rows[] = new TableSeparator();
         }

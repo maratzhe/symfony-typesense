@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\JsonType;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -39,7 +40,7 @@ class Transformer
     /**
      * @template T of object
      * @param T $model
-     * @return array<string, string|null|int|float|bool>
+     * @return array<string, mixed>
      * @throws Exception
      * @throws ConversionException
      */
@@ -52,7 +53,7 @@ class Transformer
 
         $fields = $this->normalizeObject($model, '');
 
-        if (isset($fields['id'])) {
+        if (isset($fields['id']) && is_scalar($fields['id'])) {
             $fields['id'] = (string) $fields['id'];
         } else {
             $fields['id']   = $this->id($model);
@@ -65,13 +66,13 @@ class Transformer
      * @template T of object
      * @param T $model
      * @param string $prefix
-     * @return array<string, string|null|int|float|bool>
+     * @return array<string, mixed>
      * @throws Exception
      * @throws ConversionException
      */
     protected function normalizeObject(object $model, string $prefix): array
     {
-        /** @var array<string, string|null|int|float|bool> $fields */
+        /** @var array<string, mixed> $fields */
         $fields         = [];
         $meta           = $this->entityManager->getClassMetadata($model::class);
         $mapperMeta     = $this->mapper->meta($model::class);
@@ -105,9 +106,12 @@ class Transformer
                 }
 
                 $type   = Type::getType($field->type);
-
                 /** @var string|null|int|float|bool $converted */
                 $converted  = $type->convertToDatabaseValue($value, $platform);
+
+                if($type instanceof JsonType) {
+                    $converted  = json_decode((string)$converted, true);
+                }
 
                 $fields[$prefix.$field->name] = $converted;
             }
@@ -204,7 +208,6 @@ class Transformer
                 $localMeta  = $this->entityManager->getClassMetadata($field->embeddedClass);
                 $localModel = $localMeta->newInstance();
 
-
                 if($this->hydrateObject($localModel, $fields, $prefix.$field->name . '.')) {
                     $hydrated = true;
                     $meta->setFieldValue($model, $field->name, $localModel);
@@ -212,7 +215,14 @@ class Transformer
             }
             elseif($field->type !== null && isset($fields[$key])) {
                 $type = Type::getType($field->type);
-                $meta->setFieldValue($model, $field->name, $type->convertToPHPValue($fields[$key], $platform));
+                $value = $fields[$key];
+                if($type instanceof JsonType) {
+                    $value  = json_encode($value);
+                }
+
+                $value = $type->convertToPHPValue($value, $platform);
+
+                $meta->setFieldValue($model, $field->name, $value);
                 $hydrated = true;
             }
         }

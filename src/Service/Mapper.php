@@ -54,8 +54,10 @@ class Mapper
         if(is_string($entity)) {
             return $this->classes[$entity] ?? null;
         }
-
-        return $this->classes[$entity::class] ?? null;
+        else {
+            $ormMeta    = $this->metaORM($entity);
+            return $this->classes[$ormMeta->name] ?? null;
+        }
     }
 
     /**

@@ -75,7 +75,7 @@ class Transformer
         /** @var array<string, mixed> $fields */
         $fields         = [];
         $meta           = $this->entityManager->getClassMetadata($model::class);
-        $mapperMeta     = $this->mapper->meta($model::class);
+        $mapperMeta     = $this->mapper->meta($model);
         $identifiers    = $meta->getIdentifierFieldNames();
         $platform       = $this->entityManager->getConnection()->getDatabasePlatform();
         $initialized    = !$this->entityManager->isUninitializedObject($model);

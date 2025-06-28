@@ -22,6 +22,7 @@ use Maratzhe\SymfonyTypesense\Search\FieldMapping;
 use Maratzhe\SymfonyTypesense\Search\PropertyMeta;
 use Maratzhe\SymfonyTypesense\Search\RelationMapping;
 use Maratzhe\SymfonyTypesense\Search\RelationMeta;
+use ReflectionProperty;
 
 
 class Mapper
@@ -171,7 +172,7 @@ class Mapper
             $search = $property->getAttributes(SearchRelation::class)[0] ?? null;
             $child = $search !== null;
             if(!$child) {
-                if($reverseProperty === null) {
+                if(!($reverseProperty instanceof ReflectionProperty)) {
                     continue;
                 }
 
@@ -189,7 +190,7 @@ class Mapper
             $relations[$property->name] = new RelationMeta(
                 $relationMeta->name,
                 $property->name,
-                $reverseProperty->name ?? null,
+                $reverseProperty instanceof ReflectionProperty ? $reverseProperty->name : null,
                 $child,
                 $one,
                 $mapping

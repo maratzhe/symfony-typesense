@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Functional;
 
+use App\Entity\Company;
 use App\Entity\Composition;
 use App\Entity\Material;
 use App\Entity\Product;
+use App\Entity\ProductManyToOneRelation;
 use App\Entity\Properties;
 use App\Value\Color;
 use App\Value\CustomId;
@@ -37,6 +39,23 @@ class TransformerTest extends KernelTestCase
         $expected       = $this->testData();
 
         self::assertEquals($expected, $data);
+    }
+
+    public function testNormalizeManyToOne()
+    {
+        $em         = $this->em();
+
+        $company    = new Company('test company');
+        $em->persist($company);
+        $em->flush();
+
+        $product   = new ProductManyToOneRelation(Pattern::Fret, $company);
+        $em->persist($product);
+
+        $transformer    = self::getContainer()->get(Transformer::class);
+        $data           = $transformer->normalize($product);
+
+        self::assertArrayHasKey('company.id', $data);
     }
 
     public function testHydrate(): void

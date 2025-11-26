@@ -8,6 +8,7 @@ namespace Functional;
 use App\Entity\Composition;
 use App\Entity\Product;
 use App\Entity\ProductDeepEmbeded;
+use App\Entity\ProductManyToOneRelation;
 use App\Entity\ProductPartial;
 use App\Entity\Properties;
 use App\Value\Price;
@@ -62,6 +63,13 @@ class MapperTest extends KernelTestCase
         self::assertInstanceOf(ClassMeta::class, $mapping);
         self::assertCount(2, $mapping->fields);
         self::assertCount(2, $mapping->relations);
+    }
+
+    public function testProductManyToOne()
+    {
+        $mapping    = Mapper::mapClass(ProductManyToOneRelation::class, $this->em());
+        self::assertInstanceOf(ClassMeta::class, $mapping);
+        self::assertCount(1, $mapping->relations);
     }
 
     public function testCollections() : void

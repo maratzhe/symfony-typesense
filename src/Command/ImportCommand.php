@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Maratzhe\SymfonyTypesense\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Maratzhe\SymfonyTypesense\Service\CollectionManager;
+use Maratzhe\SymfonyTypesense\Service\Crawler;
 use Maratzhe\SymfonyTypesense\Service\Indexer;
 use Maratzhe\SymfonyTypesense\Service\Mapper;
-use Maratzhe\SymfonyTypesense\Service\Transformer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,7 +24,8 @@ class ImportCommand extends AbstractCommand
     public function __construct(
         protected EntityManagerInterface $entityManager,
         protected Indexer $indexer,
-        Mapper $mapper,
+        protected Mapper $mapper,
+        protected Crawler $crawler
     ) {
         parent::__construct($mapper);
     }
@@ -99,10 +98,10 @@ class ImportCommand extends AbstractCommand
      * @throws \JsonException
      * @throws \Typesense\Exceptions\TypesenseClientError
      */
-    private function populateIndex(SymfonyStyle $io, string $collection, string $class, int $firstPage, int $perPage, string|null $lastPage = null): int
+    protected function populateIndex(SymfonyStyle $io, string $collection, string $class, int $firstPage, int $perPage, string|null $lastPage = null): int
     {
         $populated = 0;
-        $total = (int) $this->entityManager->createQuery('SELECT COUNT(e) FROM '.$class.' e')->getSingleScalarResult();
+        $total = $this->crawler->total($class);
         $pages = ceil($total / $perPage);
         $last = (int) ($lastPage ?? $pages);
 
@@ -115,24 +114,8 @@ class ImportCommand extends AbstractCommand
         ));
 
         for ($i = $firstPage; $i <= $last; ++$i) {
-            $meta   = $this->mapper->meta($class);
-            assert(is_object($meta));
-            $joins  = $this->getJoins($class, 'entity');
-            $select = ['entity', ...array_keys($joins)];
-
-            $query  = $this->entityManager->createQueryBuilder()
-                ->select($select)
-                ->from($meta->class, 'entity')
-                ->setFirstResult(($i - 1) * $perPage)
-                ->setMaxResults($perPage);
-
-            foreach ($joins as $alias => $field) {
-                $query->leftJoin($field, $alias);
-            }
-
-            $entities = new Paginator($query);
+            $entities   = $this->crawler->paginator($class, $i, $perPage);
             foreach ($entities as $entity) {
-                assert(is_object($entity));
                 $this->indexer->persist($entity);
             }
 
@@ -146,41 +129,11 @@ class ImportCommand extends AbstractCommand
             $populated += $toPersist;
 
             $this->indexer->flush();
-
-            $this->entityManager->clear();
+            $this->crawler->clear();
         }
 
         $io->newLine();
 
         return $populated;
-    }
-
-    /**
-     * @param string $class
-     * @param string $parent
-     * @return array<string, string>
-     */
-    protected function getJoins(string $class, string $parent): array
-    {
-        $data   = [];
-        $meta    = $this->mapper->meta($class);
-        if($meta === null) {
-            return $data;
-        }
-
-        foreach ($meta->relations as $relation) {
-            if(!$relation->child || $relation->relation === null || !$relation->relation->bulk) {
-                continue;
-            }
-
-
-
-
-            $data[$relation->field] = $parent . '.' . $relation->field;
-
-            $data   = [...$data, ...$this->getJoins($relation->class, $relation->field)];
-        }
-
-        return $data;
     }
 }

@@ -65,7 +65,7 @@ class MapperTest extends KernelTestCase
         self::assertCount(2, $mapping->relations);
     }
 
-    public function testProductManyToOne()
+    public function testProductManyToOne() : void
     {
         $mapping    = Mapper::mapClass(ProductManyToOneRelation::class, $this->em());
         self::assertInstanceOf(ClassMeta::class, $mapping);

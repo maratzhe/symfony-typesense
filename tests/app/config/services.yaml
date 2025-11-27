@@ -39,3 +39,6 @@ services:
         alias: 'search.listener'
         public: true
 
+    Maratzhe\SymfonyTypesense\Service\Crawler:
+      alias: 'search.crawler'
+      public: true

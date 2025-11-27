@@ -41,7 +41,7 @@ class TransformerTest extends KernelTestCase
         self::assertEquals($expected, $data);
     }
 
-    public function testNormalizeManyToOne()
+    public function testNormalizeManyToOne() : void
     {
         $em         = $this->em();
 
@@ -51,11 +51,16 @@ class TransformerTest extends KernelTestCase
 
         $product   = new ProductManyToOneRelation(Pattern::Fret, $company);
         $em->persist($product);
+        $em->flush();
+        $em->clear();
 
+
+        /** @var Transformer */
         $transformer    = self::getContainer()->get(Transformer::class);
         $data           = $transformer->normalize($product);
 
         self::assertArrayHasKey('company.id', $data);
+        self::assertArrayHasKey('company.name', $data);
     }
 
     public function testHydrate(): void

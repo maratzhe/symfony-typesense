@@ -9,6 +9,7 @@ use App\Entity\CompositionNonSync;
 use App\Entity\Material;
 use App\Entity\MaterialNonSync;
 use App\Entity\Product;
+use App\Entity\ProductManyToOneRelation;
 use App\Entity\ProductNonSync;
 use App\Entity\ProductRelationsNonSync;
 use App\Entity\Properties;
@@ -374,7 +375,7 @@ class EventListenerTest extends KernelTestCase
             Product::class,
             ProductNonSync::class,
             ProductRelationsNonSync::class,
-            ProductRelationsNonSync::class,
+            ProductManyToOneRelation::class,
         ];
 
         foreach ($classes as $class) {

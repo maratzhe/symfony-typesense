@@ -18,7 +18,7 @@ use Maratzhe\SymfonyTypesense\Enum\SyncMode;
 
 
 #[Entity]
-#[SearchCollection(sync: SyncMode::AUTO)]
+#[SearchCollection(name: 'product_many_to_one', sync: SyncMode::AUTO)]
 class ProductManyToOneRelation
 {
     #[Id]
@@ -38,8 +38,8 @@ class ProductManyToOneRelation
         public ?Pattern $pattern,
 
 
-        #[SearchRelation(sync: SyncMode::AUTO)]
-        #[ManyToOne]
+        #[ManyToOne(targetEntity: Company::class)]
+        #[SearchRelation(sync: SyncMode::AUTO, bulk: true)]
         public Company $company
     )
     {

@@ -16,17 +16,24 @@ services:
 
   search.collection_manager:
     class: 'Maratzhe\SymfonyTypesense\Service\CollectionManager'
-    public: true
+    public: false
     arguments:
       $client: '@search.client'
       $mapper: '@search.mapper'
 
   search.indexer:
     class: 'Maratzhe\SymfonyTypesense\Service\Indexer'
-    public: true
+    public: false
     arguments:
       $collectionManager: '@search.collection_manager'
       $transformer: '@search.transformer'
+      $mapper: '@search.mapper'
+
+  search.crawler:
+    class: 'Maratzhe\SymfonyTypesense\Service\Crawler'
+    public: false
+    arguments:
+      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
       $mapper: '@search.mapper'
 
   search.listener:
@@ -85,5 +92,6 @@ services:
       $mapper: '@search.mapper'
       $entityManager: '@Doctrine\ORM\EntityManagerInterface'
       $indexer: '@search.indexer'
+      $crawler: '@search.crawler'
     tags:
       - 'console.command'

@@ -42,7 +42,7 @@ class Product
 
     /** @var array<int, Color>  */
     #[Column(type: 'color_array')]
-    #[SearchField(name: 'colors', type: FieldType::INT32_ARRAY, index: true, facet: true)]
+    #[SearchField(name: 'colors', type: FieldType::INT32_ARRAY, facet: true, index: true)]
     public array $colors;
 
     /** @var array<int, Photo>  */

@@ -90,7 +90,6 @@ services:
     class: 'Maratzhe\SymfonyTypesense\Command\ImportCommand'
     arguments:
       $mapper: '@search.mapper'
-      $entityManager: '@Doctrine\ORM\EntityManagerInterface'
       $indexer: '@search.indexer'
       $crawler: '@search.crawler'
     tags:

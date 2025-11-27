@@ -22,7 +22,6 @@ class ImportCommand extends AbstractCommand
     protected bool $isError = false;
 
     public function __construct(
-        protected EntityManagerInterface $entityManager,
         protected Indexer $indexer,
         protected Mapper $mapper,
         protected Crawler $crawler

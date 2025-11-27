@@ -1,5 +1,7 @@
 {
     "name": "maratzhe/symfony-typesense",
+    "description" : "Integrate Typesense to Symfony & Doctrine ORM",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Maratzhe\\SymfonyTypesense\\": "src/"

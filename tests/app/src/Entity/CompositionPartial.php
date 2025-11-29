@@ -27,7 +27,7 @@ class CompositionPartial
 
     public function __construct(
 
-        #[ManyToOne(targetEntity: MaterialPartial::class,  inversedBy: 'compositions')]
+        #[ManyToOne(targetEntity: MaterialPartial::class, cascade: ['persist'],  inversedBy: 'compositions')]
         #[SearchRelation(sync: SyncMode::AUTO)]
         public MaterialPartial $material,
 

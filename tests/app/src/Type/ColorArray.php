@@ -14,7 +14,7 @@ class ColorArray extends JsonType
     public function convertToDatabaseValue($value, AbstractPlatform $platform) : string
     {
         if (!is_array($value)) {
-            throw ConversionException::conversionFailedSerialization($value, 'json', 'wrong argument');
+            throw new ConversionException('wrong argument');
         }
 
         return parent::convertToDatabaseValue($value, $platform);

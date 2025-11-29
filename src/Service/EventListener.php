@@ -146,11 +146,10 @@ class EventListener
                 continue;
             }
 
-            $mapping    = $relationMeta->relations[$relation->reverse]->relation;
+            $mapping        =  $relationMeta->relations[(string)$relation->reverse]->relation;
             if($mapping === null || $mapping->sync !== SyncMode::AUTO) {
                 continue;
             }
-
 
             /** @var object $value */
             $value  = $this->mapper->metaORM($entity)->getFieldValue($entity, $relation->field);

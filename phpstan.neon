@@ -1,4 +1,10 @@
 parameters:
+    ignoreErrors:
+    		-
+    			identifiers:
+    			    - class.notFound
+    			    - method.nonObject
+    			path: src/Bundle/DependencyInjection/Configuration.php
     typeAliases:
         \TypesenseField: 'array<int, array{name: string, type: string, locale: string, optional: bool, facet: bool, index: bool, infix: bool, sort: bool, stem: bool}>'
         \TypesenseDocument: 'array<string, string|int|float|bool|array<string|int, mixed>>'

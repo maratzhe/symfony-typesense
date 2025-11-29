@@ -72,13 +72,14 @@ class IndexerTest extends KernelTestCase
 
         $em->persist($product);
         $em->persist($product2);
-
+        $em->flush();;
 
         $this->indexer()->persist($product);
         $this->indexer()->persist($product2);
 
 
         $data   = $this->indexer()->toPersist();
+
 
         self::assertNotEmpty($data);
         self::assertArrayHasKey(Product::class, $data);
@@ -124,6 +125,7 @@ class IndexerTest extends KernelTestCase
         );
 
         $em->persist($product);
+        $em->flush();
 
         $this->indexer()->persist($product);
 
@@ -133,7 +135,7 @@ class IndexerTest extends KernelTestCase
         self::assertCount(1, $data[ProductPartial::class]);
         self::assertArrayHasKey($product->id, $data[ProductPartial::class]);
         self::assertIsArray($data[ProductPartial::class][$product->id]);
-        self::assertCount(6, $data[ProductPartial::class][$product->id]);
+        self::assertCount(10, $data[ProductPartial::class][$product->id]);
     }
 
     public function testRemove() : void

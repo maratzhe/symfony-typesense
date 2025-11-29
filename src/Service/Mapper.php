@@ -63,7 +63,7 @@ class Mapper
 
     /**
      * @template T of object
-     * @param class-string<T> | T $entity
+     * @param class-string<T>|T $entity
      * @return ClassMetadata<T>
      */
     public function metaORM(string|object $entity) : ClassMetadata

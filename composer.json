@@ -2,6 +2,14 @@
     "name": "maratzhe/symfony-typesense",
     "description" : "Integrate Typesense to Symfony & Doctrine ORM",
     "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "authors": [
+      {
+        "name": "Marat Zhexembayev",
+        "email": "marat.zh@gmail.com"
+      }
+    ],
     "autoload": {
         "psr-4": {
             "Maratzhe\\SymfonyTypesense\\": "src/"
@@ -13,41 +21,27 @@
             "App\\": "tests/app/src"
         }
     },
-    "authors": [
-        {
-            "name": "Marat Zhexembayev",
-            "email": "marat.zh@gmail.com"
-        }
-    ],
     "require": {
         "php": "^8.3",
-        "symfony/framework-bundle": "^7.3",
-        "symfony/console": "^7.3",
-        "typesense/typesense-php": "^4.9",
-        "php-http/curl-client": "^2.3",
-        "symfony/http-client": "^7.3",
-        "symfony/cache": "^7.3",
-        "symfony/config": "^7.3",
-        "symfony/http-kernel": "^7.3",
-        "symfony/dependency-injection": "^7.3",
-        "symfony/options-resolver": "^7.3",
-        "nyholm/dsn": "^2.0@dev",
-        "symfony/orm-pack": "dev-main",
-        "symfony/string": "7.3.*"
+        "doctrine/orm": "^3.5",
+        "typesense/typesense-php": "^5.2",
+        "symfony/http-client": "^7.3"
     },
     "require-dev": {
+        "doctrine/doctrine-bundle": "^2.4",
         "phpunit/phpunit": "^11.5",
-        "symfony/yaml": "7.3.x-dev",
-        "symfony/runtime": "7.3.x-dev",
-        "symfony/maker-bundle": "^1.0@dev",
-        "zenstruck/foundry": "2.x-dev",
-        "symfony/uid": "7.3.x-dev",
-        "phpstan/phpstan": "2.1.x-dev",
-        "friendsofphp/php-cs-fixer": "*",
-        "phpstan/extension-installer": "1.4.x-dev",
-        "phpstan/phpstan-symfony": "2.0.x-dev",
-        "phpstan/phpstan-strict-rules": "2.0.x-dev",
-        "phpstan/phpstan-phpunit": "2.0.x-dev"
+        "symfony/framework-bundle": "^7.3",
+        "symfony/yaml": "^7.3",
+        "zenstruck/foundry": "^2.8",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
+        "symfony/uid": "^7.3",
+        "symfony/runtime": "^7.3",
+        "symfony/maker-bundle": "^1.65",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-symfony": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0"
     },
     "config": {
         "allow-plugins": {
@@ -56,8 +50,6 @@
             "phpstan/extension-installer": true
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": false,
     "scripts" : {
         "up" : "docker compose up --detach",
         "down" : "docker compose down --remove-orphans",
@@ -73,7 +65,7 @@
             "php tests/app/bin/console cache:clear",
             "php tests/app/bin/console cache:clear --env=test"
         ],
-        "phpstan" : "php ./vendor/bin/phpstan",
+        "phpstan" : "php ./vendor/bin/phpstan  --memory-limit=256M",
         "test" : "php ./vendor/bin/phpunit ./tests",
         "ci" : [
             "@phpstan",

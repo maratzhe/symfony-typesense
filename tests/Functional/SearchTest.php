@@ -96,6 +96,7 @@ class SearchTest extends KernelTestCase
 
 
         foreach ($patterns->facet_counts[0]['counts'] as $count) {
+            self::assertArrayHasKey($count['value'], $patternCounts);
             self::assertEquals($count['count'], $patternCounts[$count['value']]);
         }
 
@@ -108,9 +109,9 @@ class SearchTest extends KernelTestCase
         ];
 
         foreach ($colors->facet_counts[0]['counts'] as $count) {
+            self::assertArrayHasKey($count['value'], $colorCounts);
             self::assertEquals($count['count'], $colorCounts[$count['value']]);
         }
-
     }
 
 

@@ -40,7 +40,7 @@ class ShowCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io         = new SymfonyStyle($input, $output);
-        $index      = $this->argument($input, 'index');
+        $index      = (string)$this->argument($input, 'index');
         $id         = $this->argument($input, 'id');
         $classes    = array_filter($this->mapper->classes(), fn(ClassMeta $class): bool => $class->is_collection);
         $indexes    = [];

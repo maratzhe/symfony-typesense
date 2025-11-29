@@ -13,10 +13,13 @@ use App\Value\Pattern;
 use App\Value\Photo;
 use App\Value\Price;
 use Doctrine\ORM\EntityManagerInterface;
+use Override;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 
 #[AsCommand(
     name: 'test:data',
@@ -24,12 +27,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class TestData extends Command
 {
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @throws LogicException When the command name is empty
+     */
     public function __construct(
         protected EntityManagerInterface $entityManager,
     )
     {
         parent::__construct();
     }
+
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
 

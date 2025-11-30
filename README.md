@@ -13,7 +13,7 @@ Features:
 ## Installation
 
 
-Install the bundle using composer
+Install the bundle using composer:
 
 ```bash
 composer require acseo/typesense-bundle
@@ -29,7 +29,7 @@ return [
 ]
 ```
 
-Configure the Bundle
+Configure the Bundle:
 
 ```bash
 # .env

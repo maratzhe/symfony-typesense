@@ -74,8 +74,8 @@ class Product
 
 Parameters:
 
-- **name**: *string*. Collection name in Typesense. **Default**: *class name*.
-- **sync**: *Maratzhe\SymfonyTypesense\Enum\SyncMode*. Update mode. *SyncMode::AUTO* - update collection on entity create, update or remove. *SyncMode::NONE* - update entity only by cli command. **Default**: *SyncMode::NONE*.
+- **name**: string. Collection name in Typesense. **Default**: class name.
+- **sync**: SyncMode. Update mode. SyncMode::AUTO - update collection on entity create, update or remove. SyncMode::NONE - update entity only by CLI command. **Default**: SyncMode::NONE.
 
 
 ### #[SearchField]
@@ -83,6 +83,7 @@ Parameters:
 
 ```php
     use Maratzhe\SymfonyTypesense\Attribute\SearchField;
+    use Maratzhe\SymfonyTypesense\Enum\FieldType;
     
     ...
     #[Column(type: 'string', length: '2048')]
@@ -94,11 +95,28 @@ Parameters:
 Parameters:
 
 - **name**: field name in Typesense. **Default**: *entity field name*.
-- **type**: *Maratzhe\SymfonyTypesense\Attribute\SearchField*. [Field type](https://typesense.org/docs/29.0/api/collections.html#field-types) in Typesense. **Default**: *null* (mapping from Doctrine ORM type).
-- **locale**: *string*. Field [locale](https://typesense.org/docs/29.0/api/collections.html#field-parameters). **Default**: *""*.
-- **optional**: *bool*. [Optional](https://typesense.org/docs/29.0/api/collections.html#field-parameters) field. **Default**: *true*.
-- **facet**: *bool*. Enables [faceting](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
-- **index**: *bool*. Enables [index](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
-- **infix**: *bool*. Enables [infix search](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
-- **sort**: *bool*. Enables [sort](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
-- **stem**: *bool*. Enables [stem](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
+- **type**: FieldType. [Field type](https://typesense.org/docs/29.0/api/collections.html#field-types) in Typesense. **Default**: null (mapping from Doctrine ORM type).
+- **locale**: string. Field [locale](https://typesense.org/docs/29.0/api/collections.html#field-parameters). **Default**: "".
+- **optional**: bool. [Optional](https://typesense.org/docs/29.0/api/collections.html#field-parameters) field. **Default**: true.
+- **facet**: bool. Enables [faceting](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: false.
+- **index**: bool. Enables [index](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: false.
+- **infix**: bool. Enables [infix search](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: false.
+- **sort**: bool. Enables [sort](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: false.
+- **stem**: bool. Enables [stem](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: false.
+
+### #[SearchRelation]
+
+```php
+    use Maratzhe\SymfonyTypesense\Attribute\SearchCollection;
+    
+    ...
+    #[OneToMany(targetEntity: Composition::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+    #[SearchRelation(sync: SyncMode::AUTO, bulk: true)]
+    public Collection $compositions;
+    ...
+```
+
+Parameters:
+
+- **sync**: SyncMode. Update mode. SyncMode::AUTO - update entity on relation create, update or remove. SyncMode::NONE - disable auto update. **Default**: SyncMode::NONE.
+- **bulk**: bool. On true - update relation on CLI search:import command. **Default**: false.

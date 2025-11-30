@@ -11,22 +11,6 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
 #        use_savepoints: true
 
-
-#Unrecognized options "
-#  auto_generate_proxy_classes,
-#  enable_lazy_ghost_objects,
-#  report_fields_where_declared
-#  " under "doctrine.orm.entity_managers.default". Available options are
-#  "auto_mapping",
-#  "class_metadata_factory_name",
-#  "connection",
-#  "default_repository_class",
-#  "dql",
-#  "entity_listener_resolver",
-#  "entity_listeners",
-#  "fetch_mode_subselect_batch_size",
-#  "filters", "hydrators", "identity_generation_preferences", "mappings", "metadata_cache_driver", "naming_strategy", "query_cache_driver", "quote_strategy", "repository_factory", "result_cache_driver", "schema_ignore_classes", "second_level_cache", "typed_field_mapper", "validate_xml_mapping".
-
         types:
             custom_id: App\Type\CustomIdType
             photo_array: App\Type\PhotoArray

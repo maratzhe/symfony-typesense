@@ -36,6 +36,7 @@ Configure the Bundle
 TYPESENSE_DSN=http://localhost:8108?api_key=xyz
 ```
 
+### Docker
 If you use Symfony with [docker image](https://github.com/dunglas/symfony-docker) add to compose.yaml:
 
 ```yaml

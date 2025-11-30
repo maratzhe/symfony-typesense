@@ -74,5 +74,31 @@ class Product
 
 Parameters:
 
-- **name**: collection name in Typesense. **Default**: class name.
-- **sync**: synchronization type. *SyncMode::AUTO* - update collection on entity create, update or remove. *SyncMode::NONE* - update entity only by cli command. **Default**: SyncMode::NONE.
+- **name**: *string*. Collection name in Typesense. **Default**: *class name*.
+- **sync**: *Maratzhe\SymfonyTypesense\Enum\SyncMode*. Update mode. *SyncMode::AUTO* - update collection on entity create, update or remove. *SyncMode::NONE* - update entity only by cli command. **Default**: *SyncMode::NONE*.
+
+
+### #[SearchField]
+
+
+```php
+    use Maratzhe\SymfonyTypesense\Attribute\SearchField;
+    
+    ...
+    #[Column(type: 'string', length: '2048')]
+    #[SearchField]
+    public string $description = '';
+    ...
+```
+
+Parameters:
+
+- **name**: field name in Typesense. **Default**: *entity field name*.
+- **type**: *Maratzhe\SymfonyTypesense\Attribute\SearchField*. [Field type](https://typesense.org/docs/29.0/api/collections.html#field-types) in Typesense. **Default**: *null* (mapping from Doctrine ORM type).
+- **locale**: *string*. Field [locale](https://typesense.org/docs/29.0/api/collections.html#field-parameters). **Default**: *""*.
+- **optional**: *bool*. [Optional](https://typesense.org/docs/29.0/api/collections.html#field-parameters) field. **Default**: *true*.
+- **facet**: *bool*. Enables [faceting](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
+- **index**: *bool*. Enables [index](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
+- **infix**: *bool*. Enables [infix search](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
+- **sort**: *bool*. Enables [sort](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.
+- **stem**: *bool*. Enables [stem](https://typesense.org/docs/29.0/api/collections.html#field-parameters) on the field. **Default**: *false*.

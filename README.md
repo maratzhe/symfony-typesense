@@ -56,3 +56,23 @@ And edit .env file:
 # .env
 TYPESENSE_DSN=http://typesense:8108?api_key=xyz
 ```
+
+## Mapping
+
+
+### #[SearchCollection]
+
+```php
+
+use Maratzhe\SymfonyTypesense\Enum\SyncMode;
+use Maratzhe\SymfonyTypesense\Attribute\SearchCollection;
+
+#[Entity]
+#[SearchCollection(name: 'product', sync: SyncMode::AUTO)]
+class Product
+```
+
+Parameters:
+
+- **name**: collection name in Typesense. **Default**: class name.
+- **sync**: synchronization type. *SyncMode::AUTO* - update collection on entity create, update or remove. *SyncMode::NONE* - update entity only by cli command. **Default**: SyncMode::NONE.

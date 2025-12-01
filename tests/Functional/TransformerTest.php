@@ -153,6 +153,7 @@ class TransformerTest extends KernelTestCase
             'price.price'   => 32,
             'price.currency' => 'eur',
             'published' => 0,
+            'description' => '',
             'compositions.0.id' => 1,
             'compositions.0.value' => 30,
             'compositions.0.material.id' => 1,

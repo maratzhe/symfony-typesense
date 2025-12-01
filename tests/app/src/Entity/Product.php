@@ -71,6 +71,10 @@ class Product
     #[SearchField(index: true)]
     public bool $published;
 
+    #[Column]
+    #[SearchField(index: true)]
+    public string $description;
+
     /**
      * @param CustomId|null $custom_id
      * @param array<int, Color> $colors
@@ -79,6 +83,7 @@ class Product
      * @param Price|null $price
      * @param array<int, Composition> $compositions
      * @param Properties|null $properties
+     * @param string $description
      */
     public function __construct(
         ?CustomId $custom_id = null,
@@ -88,7 +93,8 @@ class Product
         ?Price $price = null,
         array $compositions = [],
         ?Properties $properties = null,
-        bool $published = false
+        bool $published = false,
+        string $description = ''
     )
     {
         $this->custom_id        = $custom_id;
@@ -99,6 +105,7 @@ class Product
         $this->price            = $price;
         $this->properties       = $properties;
         $this->published        = $published;
+        $this->description      = $description;
 
         foreach ($this->compositions as $composition) {
             $composition->product = $this;

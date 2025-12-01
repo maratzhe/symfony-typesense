@@ -27,7 +27,7 @@ class MapperTest extends KernelTestCase
 
         self::assertInstanceOf(ClassMeta::class, $mapping);
         self::assertEquals(Product::class, $mapping->class);
-        self::assertCount(7, $mapping->fields);
+        self::assertCount(8, $mapping->fields);
         self::assertCount(2, $mapping->relations);
         self::assertArrayHasKey('price', $mapping->fields);
         self::assertEquals(Price::class,  $mapping->fields['price']->embeddedClass);
@@ -194,6 +194,17 @@ class MapperTest extends KernelTestCase
                 'stem'      => false
             ],
             10 => [
+                'name'      => 'description',
+                'type'      => 'string',
+                'locale'    => '',
+                'optional'  => true,
+                'facet'     => false,
+                'index'     => true,
+                'infix'     => false,
+                'sort'      => false,
+                'stem'      => false
+            ],
+            11 => [
                 'name'      => 'compositions.*',
                 'type'      => 'object[]',
                 'locale'    => '',
@@ -204,7 +215,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            11 => [
+            12 => [
                 'name'      => 'compositions.*.id',
                 'type'      => 'int32',
                 'locale'    => '',
@@ -215,7 +226,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            12 => [
+            13 => [
                 'name'      => 'compositions.*.value',
                 'type'      => 'int32',
                 'locale'    => '',
@@ -226,7 +237,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            13 => [
+            14 => [
                 'name'      => 'compositions.*.material',
                 'type'      => 'object',
                 'locale'    => '',
@@ -237,7 +248,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            14 => [
+            15 => [
                 'name'      => 'compositions.*.material.id',
                 'type'      => 'int32',
                 'locale'    => '',
@@ -248,7 +259,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            15 => [
+            16 => [
                 'name'      => 'compositions.*.material.name',
                 'type'      => 'string',
                 'locale'    => '',
@@ -259,7 +270,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            16 => [
+            17 => [
                 'name'      => 'properties',
                 'type'      => 'object',
                 'locale'    => '',
@@ -270,7 +281,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            17 => [
+            18 => [
                 'name'      => 'properties.id',
                 'type'      => 'int32',
                 'locale'    => '',
@@ -281,7 +292,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            18 => [
+            19 => [
                 'name'      => 'properties.name',
                 'type'      => 'string',
                 'locale'    => '',
@@ -292,7 +303,7 @@ class MapperTest extends KernelTestCase
                 'sort'      => false,
                 'stem'      => false
             ],
-            19 => [
+            20 => [
                 'name'      => 'properties.value',
                 'type'      => 'string',
                 'locale'    => '',
@@ -304,8 +315,6 @@ class MapperTest extends KernelTestCase
                 'stem'      => false
             ]
         ];
-
-
 
         $mapper     = $this->mapper();
         $mapping    = $mapper->mapping(Product::class);

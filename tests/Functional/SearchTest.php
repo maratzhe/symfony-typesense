@@ -114,6 +114,21 @@ class SearchTest extends KernelTestCase
         }
     }
 
+    public function testSearch() : void
+    {
+        $this->createProducts(Pattern::Camouflage, [Color::Black], 1, 'orange fabric');
+        $this->createProducts(Pattern::Camouflage, [Color::Orange], 1, 'black fabric');
+
+        $finder     = $this->finder(Product::class);
+        $orange     = $finder->query('orange')->queryBy('description')->getResult();
+        $black      = $finder->query('black')->queryBy('description')->getResult();
+        $white      = $finder->query('white')->queryBy('description')->getResult();
+
+        self::assertCount(1, $black->hits);
+        self::assertCount(1, $orange->hits);
+        self::assertCount(0, $white->hits);
+    }
+
 
     protected function em() : EntityManagerInterface
     {
@@ -146,8 +161,9 @@ class SearchTest extends KernelTestCase
      * @param Pattern $pattern
      * @param array<int, Color> $colors
      * @param int $count
+     * @param string $description
      */
-    protected function createProducts(Pattern $pattern, array $colors, int $count) : void
+    protected function createProducts(Pattern $pattern, array $colors, int $count, string $description = '') : void
     {
         for($i = 0; $i < $count; $i++) {
             $product    = new Product(
@@ -158,7 +174,8 @@ class SearchTest extends KernelTestCase
                 new Price(30, 'eur'),
                 [new Composition(new Material( 'denim'), 30), new Composition( new Material('cotton'), 70)],
                 new Properties( 'test_name', 'test_value'),
-                true
+                true,
+                $description
             );
 
             $this->em()->persist($product);

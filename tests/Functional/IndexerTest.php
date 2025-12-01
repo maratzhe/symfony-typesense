@@ -87,9 +87,9 @@ class IndexerTest extends KernelTestCase
         self::assertArrayHasKey($product->id, $data[Product::class]);
         self::assertArrayHasKey($product2->id, $data[Product::class]);
         self::assertIsArray($data[Product::class][$product->id]);
-        self::assertCount(19, $data[Product::class][$product->id]);
+        self::assertCount(20, $data[Product::class][$product->id]);
         self::assertIsArray($data[Product::class][$product2->id]);
-        self::assertCount(19, $data[Product::class][$product2->id]);
+        self::assertCount(20, $data[Product::class][$product2->id]);
 
 
 

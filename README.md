@@ -124,7 +124,7 @@ Parameters:
 
 ## Search
 ```php
-
+    use Maratzhe\SymfonyTypesense\Factory\FinderFactory;
 
     final class ProductController extends AbstractController
     {

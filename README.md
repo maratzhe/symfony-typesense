@@ -120,3 +120,41 @@ Parameters:
 
 - **sync**: SyncMode. Update mode. SyncMode::AUTO - update entity on relation create, update or remove. SyncMode::NONE - disable auto update. **Default**: SyncMode::NONE.
 - **bulk**: bool. On true - update relation on CLI search:import command. **Default**: false.
+
+
+## Search
+```php
+
+
+    final class ProductController extends AbstractController
+    {
+        #[Route('/product', name: 'product.index')]
+        public function index(FinderFactory $factory): Response
+        {
+            $finder     = $factory->create(Product::class);
+            $result     = $finder->query('blue', 'description')
+                ->filterBy('published := true')
+                ->sortBy('id:desc')
+                ->getResult();
+
+            //dump($result);           
+            //\Maratzhe\SymfonyTypesense\Search\Result {
+            //    +facet_counts: []
+            //    +found: 1
+            //    +page: 1
+            //    +pages: 1
+            //    +per_page: 10
+            //    +out_of: 110
+            //    +search_time_ms: 0
+            //    +hits: array:1 [
+            //        0 => Maratzhe\SymfonyTypesense\Search\Hit {
+            //            +document: App\Entity\Product { ▶}
+            //            +highlight: array:1 [ ▶]
+            //            +text_match: 578730123365187705
+            //            +text_match_info: array:7 [ ▶]
+            //        }
+            //    ]
+            //}
+        }
+    }
+```

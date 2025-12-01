@@ -119,6 +119,7 @@ class SearchTest extends KernelTestCase
         $this->createProducts(Pattern::Camouflage, [Color::Black], 1, 'orange fabric');
         $this->createProducts(Pattern::Camouflage, [Color::Orange], 1, 'black fabric');
 
+
         $finder     = $this->finder(Product::class);
         $orange     = $finder->query('orange')->queryBy('description')->getResult();
         $black      = $finder->query('black')->queryBy('description')->getResult();

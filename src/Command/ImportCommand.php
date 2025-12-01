@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Maratzhe\SymfonyTypesense\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
+
 use Maratzhe\SymfonyTypesense\Service\Crawler;
 use Maratzhe\SymfonyTypesense\Service\Indexer;
 use Maratzhe\SymfonyTypesense\Service\Mapper;

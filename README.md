@@ -158,3 +158,56 @@ Parameters:
         }
     }
 ```
+
+## CLI commands
+
+### search:create {index}
+
+Create Typesense collection.
+
+Arguments:
+
+- **index**: index name.
+
+Options:
+
+- **all**: create indexes for all entities.
+
+### search:import {index}
+
+Import collection from database to Typesense.
+
+Arguments:
+
+- **index**: index name.
+
+Options:
+
+- **all**: import all collections.
+- **first-page**: page to start population from. **Default**: 1
+- **last-page**: page to end population on. **Default**: null
+- **per-page**: entities per page. **Default**: 1000
+
+
+### search:mapping {index}
+
+Show collection mapping.
+
+Arguments:
+
+- **index**: index name.
+
+Options:
+
+- **all**: show mapping for all collections.
+- **real**: show mapping from Typesense instead of generated.
+
+
+### search:show {index} {id}
+
+Show document from Typesense.
+
+Arguments:
+
+- **index**: index name.
+- **id**: document ID.

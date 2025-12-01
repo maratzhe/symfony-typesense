@@ -32,7 +32,6 @@ class Product
     #[Id]
     #[Column]
     #[GeneratedValue]
-    #[SearchField]
     public ?int $id = null;
 
     #[Column(type: 'custom_id', nullable: true)]

@@ -211,3 +211,101 @@ Arguments:
 
 - **index**: index name.
 - **id**: document ID.
+
+
+## Example
+
+```php
+    #[Entity]
+    #[SearchCollection(sync: SyncMode::AUTO)]
+    class Product
+    {
+        #[Id]
+        #[Column]
+        #[GeneratedValue]
+        //ID of entity mapping by default
+        public ?int $id = null;
+    
+        #[Column(type: 'custom_id', nullable: true)]
+        #[SearchField]
+        //Use Doctrine mapping custom type
+        public ?CustomId $custom_id;
+    
+        /** @var array<int, Color>  */
+        #[Column(type: 'color_array')]
+        #[SearchField(name: 'colors', type: FieldType::INT32_ARRAY, facet: true, index: true)]
+        public array $colors;
+    
+        /** @var array<int, Photo>  */
+        #[Column(type: 'photo_array')]
+        #[SearchField(name: 'photos.*', type: FieldType::OBJECT_ARRAY)]
+        #[SearchField(name: 'photos.*.size', type: FieldType::INT32)]
+        #[SearchField(name: 'photos.*.url', type: FieldType::STRING)]
+        //Complex manual mapping for array of objects
+        public array $photos;
+    
+        #[Column(nullable: true)]
+        #[SearchField(facet:true, index: true)]
+        public ?Pattern $pattern;
+    
+        #[Embedded(class: Price::class)]
+        //for embedded objects mapping must be in [embedded class](https://github.com/maratzhe/symfony-typesense/blob/main/tests/app/src/Value/Price.php) 
+        public ?Price $price;
+    
+        /** @var Collection<int, Composition> $compositions  */
+        #[OneToMany(targetEntity: Composition::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+        #[SearchRelation(sync: SyncMode::AUTO, bulk: true)]
+        //When child relation was updated this entity will update too. Also all relations will be updated by calling "search:import"
+        public Collection $compositions;
+    
+        #[OneToOne(targetEntity: Properties::class, cascade: ['all'], orphanRemoval: true)]
+        #[SearchRelation(bulk: true)]
+        //No update after child relation updated. Update only by CLI command.
+        public ?Properties $properties;
+    
+        #[Column]
+        #[SearchField(index: true)]
+        public bool $published;
+    
+        #[Column]
+        #[SearchField(index: true)]
+        public string $description;
+    
+        /**
+         * @param CustomId|null $custom_id
+         * @param array<int, Color> $colors
+         * @param array<int, Photo> $photos
+         * @param Pattern|null $pattern
+         * @param Price|null $price
+         * @param array<int, Composition> $compositions
+         * @param Properties|null $properties
+         * @param string $description
+         */
+        public function __construct(
+            ?CustomId $custom_id = null,
+            array $colors = [],
+            array $photos = [],
+            ?Pattern $pattern = null,
+            ?Price $price = null,
+            array $compositions = [],
+            ?Properties $properties = null,
+            bool $published = false,
+            string $description = ''
+        )
+        {
+            $this->custom_id        = $custom_id;
+            $this->colors           = $colors;
+            $this->photos           = $photos;
+            $this->compositions     = new ArrayCollection($compositions);
+            $this->pattern          = $pattern;
+            $this->price            = $price;
+            $this->properties       = $properties;
+            $this->published        = $published;
+            $this->description      = $description;
+    
+            foreach ($this->compositions as $composition) {
+                $composition->product = $this;
+            }
+        }
+    }
+```

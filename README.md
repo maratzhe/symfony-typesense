@@ -217,7 +217,7 @@ Arguments:
 
 ```php
     #[Entity]
-    #[SearchCollection(sync: SyncMode::AUTO)]
+    #[SearchCollection(name: 'product', sync: SyncMode::AUTO)]
     class Product
     {
         #[Id]
@@ -249,7 +249,7 @@ Arguments:
         public ?Pattern $pattern;
     
         #[Embedded(class: Price::class)]
-        //for embedded objects mapping must be in [embedded class](https://github.com/maratzhe/symfony-typesense/blob/main/tests/app/src/Value/Price.php) 
+        //for embedded objects mapping must be in embedded class. 
         public ?Price $price;
     
         /** @var Collection<int, Composition> $compositions  */
@@ -271,16 +271,6 @@ Arguments:
         #[SearchField(index: true)]
         public string $description;
     
-        /**
-         * @param CustomId|null $custom_id
-         * @param array<int, Color> $colors
-         * @param array<int, Photo> $photos
-         * @param Pattern|null $pattern
-         * @param Price|null $price
-         * @param array<int, Composition> $compositions
-         * @param Properties|null $properties
-         * @param string $description
-         */
         public function __construct(
             ?CustomId $custom_id = null,
             array $colors = [],
@@ -308,4 +298,58 @@ Arguments:
             }
         }
     }
+```
+
+
+Mapping for this class:
+
+```bash
+➜  :./bin/console search:mapping product
+
+Mapping of product (class: App\Entity\Product), generated
+╔══════════════════════════════╤══════════╤════════╤══════════╤═══════╤═══════╤═══════╤══════╤══════╗
+║ name                         │ type     │ locale │ optional │ facet │ index │ infix │ sort │ stem ║
+╠══════════════════════════════╪══════════╪════════╪══════════╪═══════╪═══════╪═══════╪══════╪══════╣
+║ id                           │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ custom_id                    │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ colors                       │ int32[]  │        │ yes      │ yes   │ yes   │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ photos.*                     │ object[] │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ photos.*.size                │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ photos.*.url                 │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ pattern                      │ string   │        │ yes      │ yes   │ yes   │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ price.price                  │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ price.currency               │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ published                    │ bool     │        │ yes      │ no    │ yes   │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ description                  │ string   │        │ yes      │ no    │ yes   │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*               │ object[] │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*.id            │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*.value         │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*.material      │ object   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*.material.id   │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ compositions.*.material.name │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ properties                   │ object   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ properties.id                │ int32    │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ properties.name              │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╟──────────────────────────────┼──────────┼────────┼──────────┼───────┼───────┼───────┼──────┼──────╢
+║ properties.value             │ string   │        │ yes      │ no    │ no    │ no    │ no   │ no   ║
+╚══════════════════════════════╧══════════╧════════╧══════════╧═══════╧═══════╧═══════╧══════╧══════╝
 ```

@@ -5,10 +5,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "authors": [
-      {
-        "name": "Marat Zhexembayev",
-        "email": "marat.zh@gmail.com"
-      }
+        {
+            "name": "Marat Zhexembayev",
+            "email": "marat.zh@gmail.com"
+        }
     ],
     "autoload": {
         "psr-4": {

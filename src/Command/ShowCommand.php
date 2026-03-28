@@ -31,7 +31,7 @@ class ShowCommand extends Command
         parent::__construct('search:show');
     }
 
-    protected function configure()
+    protected function configure() : void
     {
         $this->addArgument('index', InputArgument::REQUIRED, 'index name');
         $this->addArgument('id', InputArgument::REQUIRED, 'id of entity');

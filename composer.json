@@ -22,16 +22,16 @@
         }
     },
     "require": {
-        "php": "^8.3",
-        "doctrine/orm": "^3.5",
+        "php": ">=8.3",
+        "doctrine/orm": ">=3.5",
         "typesense/typesense-php": "^5.2",
-        "symfony/http-client": "^7.3"
+        "symfony/http-client": ">=7.3"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^2.4",
         "phpunit/phpunit": "^11.5",
         "symfony/framework-bundle": "^7.3",
-        "symfony/yaml": ">=7.3",
+        "symfony/yaml": "^7.3",
         "zenstruck/foundry": "^2.8",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "symfony/uid": "^7.3",

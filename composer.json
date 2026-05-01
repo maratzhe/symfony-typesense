@@ -22,20 +22,20 @@
         }
     },
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "doctrine/orm": ">=3.5",
         "typesense/typesense-php": "^5.2",
-        "symfony/http-client": ">=7.3"
+        "symfony/http-client": "8.0.*"
     },
     "require-dev": {
-        "doctrine/doctrine-bundle": "^2.4",
+        "doctrine/doctrine-bundle": "^3.2",
         "phpunit/phpunit": "^11.5",
-        "symfony/framework-bundle": "^7.3",
-        "symfony/yaml": "^7.3",
+        "symfony/framework-bundle": "8.0.*",
+        "symfony/yaml": "8.0.*",
         "zenstruck/foundry": "^2.8",
         "doctrine/doctrine-migrations-bundle": "^3.7",
-        "symfony/uid": "^7.3",
-        "symfony/runtime": "^7.3",
+        "symfony/uid": "8.0.*",
+        "symfony/runtime": "8.0.*",
         "symfony/maker-bundle": "^1.65",
         "phpstan/phpstan": "^2.1",
         "phpstan/extension-installer": "^1.4",
@@ -53,6 +53,10 @@
     "scripts" : {
         "up" : "docker compose up --detach",
         "down" : "docker compose down --remove-orphans",
+        "db" : [
+            "php tests/app/bin/console doctrine:database:create --env=test",
+            "php tests/app/bin/console doctrine:migrations:migrate -n --env=test"
+        ],
         "migrate-test" : [
             "rm tests/app/migrations/*.php",
             "php tests/app/bin/console cache:clear --env=test",

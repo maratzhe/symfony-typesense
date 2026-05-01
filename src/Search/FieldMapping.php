@@ -9,7 +9,7 @@ use Maratzhe\SymfonyTypesense\Enum\FieldType;
 readonly class FieldMapping
 {
     public function __construct(
-        public string $name,
+        public ?string $name,
         public ?FieldType $type,
         public string $locale,
         public bool $optional,

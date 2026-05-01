@@ -26,6 +26,7 @@ class Transformer
         $meta = $this->entityManager->getClassMetadata($entity::class);
         $platform = $this->entityManager->getConnection()->getDatabasePlatform();
 
+        /** @var array<string> $ids */
         $ids = array_map(function ($field) use ($meta, $entity, $platform) {
             $mapping = $meta->getFieldMapping($field);
             $type = Type::getType($mapping->type);
@@ -76,9 +77,11 @@ class Transformer
         $fields         = [];
         $meta           = $this->entityManager->getClassMetadata($model::class);
         $mapperMeta     = $this->mapper->meta($model);
-        $identifiers    = $meta->getIdentifierFieldNames();
         $platform       = $this->entityManager->getConnection()->getDatabasePlatform();
-        $initialized    = !$this->entityManager->isUninitializedObject($model);
+
+        if($this->entityManager->isUninitializedObject($model)) {
+            $this->entityManager->initializeObject($model);
+        }
 
         if ($mapperMeta === null || $meta->reflClass === null) {
             return [];
@@ -90,10 +93,6 @@ class Transformer
 
 
         foreach ($mapperMeta->fields as $field) {
-            if(!$initialized && !in_array($field->name, $identifiers, true)) {
-                continue;
-            }
-
             $value  = $meta->getFieldValue($model, $field->name);
 
             if($field->is_embedded && is_object($value)) {

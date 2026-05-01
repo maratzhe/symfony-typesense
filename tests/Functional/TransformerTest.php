@@ -30,12 +30,8 @@ class TransformerTest extends KernelTestCase
 
     public function testNormalize(): void
     {
-        /**
-         * @var Transformer $transformer
-         */
-        $transformer    = self::getContainer()->get(Transformer::class);
         $product        = $this->testProduct();
-        $data           = $transformer->normalize($product);
+        $data           = $this->transformer()->normalize($product);
         $expected       = $this->testData();
 
         self::assertEquals($expected, $data);
@@ -54,24 +50,47 @@ class TransformerTest extends KernelTestCase
         $em->flush();
         $em->clear();
 
-
-        /** @var Transformer */
-        $transformer    = self::getContainer()->get(Transformer::class);
-        $data           = $transformer->normalize($product);
+        $data           = $this->transformer()->normalize($product);
 
         self::assertArrayHasKey('company.id', $data);
         self::assertArrayHasKey('company.name', $data);
     }
 
+    public function testNormalizeManyToOneBackward() : void
+    {
+        $material1 = new Material( 'denim');
+        $material2 = new Material('cotton');
+
+        $product    = new Product(
+            new CustomId('01944071-3781-70e3-89aa-f00b80fd401d'),
+            [Color::White, Color::Red],
+            [new Photo(100, 'test_url')],
+            Pattern::Animal,
+            new Price(30, 'eur'),
+            [new Composition( $material1, 30), new Composition( $material2, 70)],
+            new Properties('test_name', 'test_value')
+        );
+
+        $this->em()->persist($product);
+        $this->em()->flush();
+        $this->em()->clear();
+
+        $composition    = $product->compositions->first();
+        self::assertNotFalse($composition);
+        $composition    = $this->em()->find(Composition::class, $composition->id);
+        self::assertNotNull($composition);
+        $product        = $composition->product;
+        self::assertNotNull($product);
+        $data           = $this->transformer()->normalize($product);
+
+        self::assertTrue(count($data) > 1);
+    }
+
     public function testHydrate(): void
     {
-        /**
-         * @var Transformer $transformer
-         */
-        $transformer    = self::getContainer()->get(Transformer::class);
         $product        = $this->testProduct();
         $data           = $this->testData();
-        $product2       = $transformer->hydrate(Product::class, $data);
+        $product2       = $this->transformer()->hydrate(Product::class, $data);
 
         self::assertEquals($product->id, $product2->id);
         self::assertNotNull($product->custom_id);
@@ -103,6 +122,12 @@ class TransformerTest extends KernelTestCase
         self::assertEquals($product->properties->id, $product2->properties->id);
         self::assertEquals($product->properties->value, $product2->properties->value);
         self::assertEquals($product->properties->name, $product2->properties->name);
+    }
+
+    protected function transformer() : Transformer
+    {
+        /** @var Transformer */
+        return self::getContainer()->get(Transformer::class);
     }
 
     protected function testProduct() : Product

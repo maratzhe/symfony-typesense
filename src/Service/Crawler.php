@@ -45,6 +45,11 @@ class Crawler
             ->setMaxResults($perPage)
             ->setHint(Paginator::HINT_ENABLE_DISTINCT, true);
 
+        $ormMeta    = $this->entityManager->getClassMetadata($class);
+        foreach ($ormMeta->identifier as $idField) {
+            $query->orderBy('entity.' . $idField, 'DESC');
+        }
+
         foreach ($joins as $alias => $field) {
             $query->leftJoin($field, $alias);
         }

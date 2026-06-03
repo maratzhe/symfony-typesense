@@ -55,7 +55,7 @@ class Crawler
         }
 
         /** @var Paginator<T> */
-        return new Paginator($query);
+        return new Paginator($query, true);
     }
 
     public function clear() : void

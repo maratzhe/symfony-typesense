@@ -42,7 +42,8 @@ class Crawler
             ->select($select)
             ->from($meta->class, 'entity')
             ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage);
+            ->setMaxResults($perPage)
+            ->setHint(Paginator::HINT_ENABLE_DISTINCT, true);
 
         foreach ($joins as $alias => $field) {
             $query->leftJoin($field, $alias);

@@ -23,7 +23,7 @@
     },
     "require": {
         "php": ">=8.4",
-        "doctrine/orm": ">=3.5",
+        "doctrine/orm": "^3.6",
         "typesense/typesense-php": "^5.2",
         "symfony/http-client": "8.*"
     },

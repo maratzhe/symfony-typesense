@@ -6,7 +6,7 @@ Attributes based and completely auto mapping.
 
 Features:
 
-- Attributes based
+- Attributes based.
 - Completely auto mapping based on Doctrine types. Manual mapping also available.
 - Relations management. Auto update parent entity when child relation was updated.
 

@@ -16,7 +16,7 @@ Features:
 Install the bundle using composer:
 
 ```bash
-composer require acseo/typesense-bundle
+composer require maratzhe/symfony-typesense
 ````
 
 ```php
